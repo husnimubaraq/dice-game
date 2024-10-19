@@ -1,0 +1,58 @@
+circle {
+    fill: black;
+}
+h1 {
+    color: white;
+}
+
+#rect text {
+    pointer-events: none;
+}
+
+svg {
+    overflow: visible;
+    height: 100%;
+
+    /* Fix Safari rendering bug */
+    transform: translateZ(0);
+}
+
+path {
+    stroke-width: 2;
+    stroke: gray;
+}
+
+a {
+    color: #88ce02;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#div {
+    width: 120px;
+    height: 60px;
+    pointer-events: none;
+    background-color: #aa00ee;
+    color: black;
+    text-align: center;
+    line-height: 60px;
+    position: absolute;
+    top: 30%;
+    left: 60%;
+    font-size: 32px;
+}
+
+
+
+
+
+.gsap-3-logo {
+    width: 20vw;
+    max-width: 150px;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+}
