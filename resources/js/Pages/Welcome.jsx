@@ -1,14 +1,65 @@
 import { Head, Link } from '@inertiajs/react';
 
-import { useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 
 gsap.registerPlugin(MotionPathPlugin);
 
 import "./index.css"
+// import { Map } from './Map'
+import { CrossPath } from './CrossPath';
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+const POINT = 0.02
+
+export default function Welcome({ }) {
+
+    const dataCross = [
+        {
+            icon: '/assets/icons/question.png',
+            type: 'question'
+        },
+        {
+            icon: '/assets/icons/question.png',
+            type: 'question'
+        },
+        {
+            icon: '/assets/icons/arrow-plus.png',
+            type: 'next'
+        },
+        {
+            icon: null,
+            type: 'stale'
+        },
+        {
+            icon: '/assets/icons/question.png',
+            type: 'question'
+        },
+        {
+            icon: '/assets/icons/arrow-minus.png',
+            type: 'previous'
+        },
+    ]
+
+    const [currentPoint, setCurrentPoint] = useState(POINT)
+
+    useEffect(() => {
+        for (let i = 0; i < dataCross.length; i++) {
+            gsap.to(`#div-cross-${i}`, {
+                motionPath: {
+                    path: "#path",
+                    align: "#path",
+                    alignOrigin: [0.5, 0.5],
+                    autoRotate: false,
+                    start: POINT * (i + 1),
+                    end: POINT * (i + 1),
+                },
+                transformOrigin: "50% 50%",
+                duration: 5,
+                ease: "power1.inOut",
+            });
+        }
+    }, [])
 
     useEffect(() => {
         gsap.to("#div", {
@@ -16,31 +67,62 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 path: "#path",
                 align: "#path",
                 alignOrigin: [0.5, 0.5],
-                autoRotate: true,
+                autoRotate: false,
+                start: 0.0,
+                end: currentPoint,
             },
             transformOrigin: "50% 50%",
             duration: 5,
             ease: "power1.inOut",
         });
-    }, [])
+    }, [currentPoint])
 
     return (
         <>
             <Head title="Welcome" />
             <main className='flex flex-col h-screen w-screen relative overflow-hidden'>
                 <img
-                    src='/assets/images/bg-2.jpg'
-                    className='w-full h-full object-cover object-left-center'
+                    src='/assets/images/bg-3.png'
+                    className='w-full h-full object-contain'
                 />
-                <div className='absolute inset-0'>
-                    <h1>MotionPathPlugin (new in GSAP 3)</h1>
+                {/* <Map
+                    className="w-[2288px] h-[1668px]"
+                /> */}
+                {/* <div className='absolute -bottom-5 left-[30%]'>
+                    <CrossPath
+                        id="cross-0"
+                        className="w-[983px] h-[775px] !text-[#FF6F00]"
+                    />
+                    <div id="div-cross">
+                        <img
+                            src='/assets/icons/question.png'
+                            className='w-[100px] h-[100px] object-contain'
+                        />
+                    </div>
+                </div> */}
+                <div className='absolute -bottom-5 left-[30%]'>
 
-                    <svg width="100%" height="100%" viewBox="-20 0 557 190" id="svg">
-                        <path id="path" d="M9,100c0,0,18.53-41.58,49.91-65.11c30-22.5,65.81-24.88,77.39-24.88c33.87,0,57.55,11.71,77.05,28.47c23.09,19.85,40.33,46.79,61.71,69.77c24.09,25.89,53.44,46.75,102.37,46.75c22.23,0,40.62-2.83,55.84-7.43c27.97-8.45,44.21-22.88,54.78-36.7c14.35-18.75,16.43-36.37,16.43-36.37" />
+                    <CrossPath
+                        id="path"
+                        className="w-[983px] h-[775px] !text-[#FF6F00]"
+                    />
+                    <div id="div" className='z-50 absolute top-[25%] left-[60%] bg-yellow-500 rounded-full h-[30px] w-[30px]'>
 
-                    </svg>
-
-                    <div id="div">#div</div>
+                    </div>
+                    {dataCross.map((item, index) => (
+                        <Fragment key={index}>
+                            <div id={`div-cross-${index}`} className='absolute top-[25%] left-[60%]'>
+                                {item.icon ? (
+                                    <img
+                                        src={item.icon}
+                                        className='w-[40px] h-[40px] object-contain'
+                                    />
+                                ) : (
+                                    <div className='w-[40px] h-[40px] bg-yellow-100 rounded-full' />
+                                )}
+                            </div>
+                        </Fragment>
+                    ))}
                 </div>
             </main>
         </>
