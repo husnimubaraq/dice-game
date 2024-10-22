@@ -3,45 +3,22 @@ import { Head, Link } from '@inertiajs/react';
 import { Fragment, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+import Dice from "react-dice-roll";
 
 gsap.registerPlugin(MotionPathPlugin);
 
 import "./index.css"
 // import { Map } from './Map'
 import { CrossPath } from './CrossPath';
+import { dataCross } from './Data';
 
 const POINT = 0.02
 
 export default function Welcome({ }) {
 
-    const dataCross = [
-        {
-            icon: '/assets/icons/question.png',
-            type: 'question'
-        },
-        {
-            icon: '/assets/icons/question.png',
-            type: 'question'
-        },
-        {
-            icon: '/assets/icons/arrow-plus.png',
-            type: 'next'
-        },
-        {
-            icon: null,
-            type: 'stale'
-        },
-        {
-            icon: '/assets/icons/question.png',
-            type: 'question'
-        },
-        {
-            icon: '/assets/icons/arrow-minus.png',
-            type: 'previous'
-        },
-    ]
-
-    const [currentPoint, setCurrentPoint] = useState(POINT)
+    const [prevPoint, setPrevPoint] = useState(0.0)
+    const [currentPoint, setCurrentPoint] = useState(0.0)
+    const [currentIndex, setCurrentIndex] = useState(0)
 
     useEffect(() => {
         for (let i = 0; i < dataCross.length; i++) {
@@ -55,11 +32,11 @@ export default function Welcome({ }) {
                     end: POINT * (i + 1),
                 },
                 transformOrigin: "50% 50%",
-                duration: 5,
+                duration: 0,
                 ease: "power1.inOut",
             });
         }
-    }, [])
+    }, [dataCross])
 
     useEffect(() => {
         gsap.to("#div", {
@@ -68,14 +45,14 @@ export default function Welcome({ }) {
                 align: "#path",
                 alignOrigin: [0.5, 0.5],
                 autoRotate: false,
-                start: 0.0,
+                start: prevPoint,
                 end: currentPoint,
             },
             transformOrigin: "50% 50%",
             duration: 5,
             ease: "power1.inOut",
         });
-    }, [currentPoint])
+    }, [currentPoint, prevPoint])
 
     return (
         <>
@@ -100,14 +77,17 @@ export default function Welcome({ }) {
                         />
                     </div>
                 </div> */}
-                <div className='absolute -bottom-5 left-[30%]'>
+                <div className='absolute -bottom-2 left-[30%]'>
 
                     <CrossPath
                         id="path"
-                        className="w-[983px] h-[775px] !text-[#FF6F00]"
+                        className="w-[983px] h-[775px]"
                     />
-                    <div id="div" className='z-50 absolute top-[25%] left-[60%] bg-yellow-500 rounded-full h-[30px] w-[30px]'>
-
+                    <div id="div" className='z-50 absolute top-[5%] left-[30%] h-[50px] w-[50px]'>
+                        <img
+                            src="/assets/images/character-1.png"
+                            className='w-[50px] h-[50px] object-contain'
+                        />
                     </div>
                     {dataCross.map((item, index) => (
                         <Fragment key={index}>
@@ -123,6 +103,16 @@ export default function Welcome({ }) {
                             </div>
                         </Fragment>
                     ))}
+                    <div className='absolute -top-[20%] right-0'>
+                        <Dice
+                            onRoll={(value) => {
+                                setPrevPoint(currentPoint)
+                                setCurrentPoint(POINT * (currentIndex + value))
+                                setCurrentIndex(currentIndex + value)
+                            }}
+                            size={100}
+                        />
+                    </div>
                 </div>
             </main>
         </>
