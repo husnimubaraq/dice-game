@@ -4,7 +4,6 @@ import { Fragment, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import Dice from "react-dice-roll";
-import useDeepCompareEffect from 'use-deep-compare-effect'
 
 gsap.registerPlugin(MotionPathPlugin);
 
@@ -12,31 +11,73 @@ import "./index.css"
 // import { Map } from './Map'
 import { CrossPath } from './CrossPath';
 import { dataCross } from './Data';
-import { c } from 'vite/dist/node/types.d-aGj9QkWt';
+import { Question } from './Question';
 
 const POINT = 0.02
 
 export default function Welcome({ }) {
 
-    const [prevPoint, setPrevPoint] = useState(0.0)
-    const [currentPoint, setCurrentPoint] = useState(0.0)
-    const [currentIndex, setCurrentIndex] = useState(0)
     const [turn, setTurn] = useState(0)
+    const [isOpen, setIsOpen] = useState(false)
 
     const [players, setPlayers] = useState([
         {
             id: 0,
             prevPoint: 0.0,
             currentPoint: 0.0,
-            currentIndex: 0
+            currentIndex: 0,
+            image: "/assets/images/character-1.png"
         },
         {
             id: 1,
             prevPoint: 0.0,
             currentPoint: 0.0,
-            currentIndex: 0
+            currentIndex: 0,
+            image: "/assets/images/character-2.png"
+        },
+        {
+            id: 2,
+            prevPoint: 0.0,
+            currentPoint: 0.0,
+            currentIndex: 0,
+            image: "/assets/images/character-3.png"
+        },
+        {
+            id: 3,
+            prevPoint: 0.0,
+            currentPoint: 0.0,
+            currentIndex: 0,
+            image: "/assets/images/character-4.png"
         }
     ])
+
+    const onResult = (value) => {
+        setIsOpen(false)
+        if(value.status){
+            let newData = [...players]
+
+            newData[turn] = {
+                ...newData[turn],
+                prevPoint: newData[turn].currentPoint,
+                currentPoint: POINT * (newData[turn].currentIndex + value.point),
+                currentIndex: newData[turn].currentIndex + value.point
+            }
+
+            setPlayers(newData)
+
+        }else{
+            let newData = [...players]
+
+            newData[turn] = {
+                ...newData[turn],
+                prevPoint: newData[turn].currentPoint,
+                currentPoint: POINT * (newData[turn].currentIndex - value.point),
+                currentIndex: newData[turn].currentIndex - value.point
+            }
+
+            setPlayers(newData)
+        }
+    }
 
     useEffect(() => {
         for (let i = 0; i < dataCross.length; i++) {
@@ -59,6 +100,8 @@ export default function Welcome({ }) {
     useEffect(() => {
         const player = players.find(x => x.id === turn)
 
+        console.log('player: ', player)
+
         if (player) {
             gsap.to(`#div-${player.id}`, {
                 motionPath: {
@@ -76,18 +119,51 @@ export default function Welcome({ }) {
         }
     }, [players])
 
-    // useDeepCompareEffect(() => {
+    useEffect(() => {
+        const cross = dataCross.find((_, i) => i === players[turn].currentIndex - 1)
 
-    // }, [players, turn])
+        console.log('cross: ', cross)
 
-    // useEffect(() => {
-    //     setTurn(previousVal => {
-    //         if (previousVal < players.length - 1) {
-    //             return previousVal + 1;
-    //         }
-    //         return 0;
-    //     });
-    // }, [players])
+        if (cross) {
+
+            let newData = [...players]
+
+            if (cross.type === "previous") {
+                setTimeout(() => {
+                    newData[turn] = {
+                        ...newData[turn],
+                        prevPoint: newData[turn].currentPoint,
+                        currentPoint: POINT * (newData[turn].currentIndex - 1),
+                        currentIndex: newData[turn].currentIndex - 1
+                    }
+
+                    setPlayers(newData)
+                }, 5000)
+            } else if (cross.type === "next") {
+                setTimeout(() => {
+                    newData[turn] = {
+                        ...newData[turn],
+                        prevPoint: newData[turn].currentPoint,
+                        currentPoint: POINT * (newData[turn].currentIndex + 1),
+                        currentIndex: newData[turn].currentIndex + 1
+                    }
+
+                    setPlayers(newData)
+                }, 5000)
+            } else if(cross.type === "question") {
+                setTimeout(() => {
+                    setIsOpen(true)
+                }, 5000)
+            } else {
+                setTurn(previousVal => {
+                    if (previousVal < players.length - 1) {
+                        return previousVal + 1;
+                    }
+                    return 0;
+                });
+            }
+        }
+    }, [players])
 
 
     return (
@@ -119,10 +195,10 @@ export default function Welcome({ }) {
                         id="path"
                         className="w-[983px] h-[775px]"
                     />
-                    {players.map((player, index) => (
-                        <div key={player.id} id={`div-${player.id}`} className='z-50 absolute top-[5%] left-[30%] h-[50px] w-[50px]'>
+                    {players.map((player) => (
+                        <div key={player.id} id={`div-${player.id}`} className='z-30 absolute top-[5%] left-[30%] h-[50px] w-[50px]'>
                             <img
-                                src="/assets/images/character-1.png"
+                                src={player.image}
                                 className='w-[50px] h-[50px] object-contain'
                             />
                         </div>
@@ -155,52 +231,18 @@ export default function Welcome({ }) {
                                     currentIndex: newData[currentTurn].currentIndex + value
                                 }
                                 setPlayers(newData)
-
-                                setTimeout(() => {
-                                    const cross = dataCross.find((_, i) => i === newData[currentTurn].currentIndex - 1)
-
-                                    console.log('cross: ', cross)
-
-                                    if (cross) {
-
-                                        if (cross.type === "previous") {
-                                            console.log('previous')
-                                            newData[currentTurn] = {
-                                                ...newData[currentTurn],
-                                                prevPoint: newData[currentTurn].currentPoint,
-                                                currentPoint: POINT * (newData[currentTurn].currentIndex - 1),
-                                                currentIndex: newData[currentTurn].currentIndex - 1
-                                            }
-                                            setPlayers(newData)
-                                        } else if (cross.type === "next") {
-                                            console.log('next')
-                                            newData[currentTurn] = {
-                                                ...newData[currentTurn],
-                                                prevPoint: newData[currentTurn].currentPoint,
-                                                currentPoint: POINT * (newData[currentTurn].currentIndex + 1),
-                                                currentIndex: newData[currentTurn].currentIndex + 1
-                                            }
-                                            setPlayers(newData)
-                                        }
-                                    }
-
-                                    setTurn(previousVal => {
-                                        if (previousVal < players.length - 1) {
-                                            return previousVal + 1;
-                                        }
-                                        return 0;
-                                    });
-                                }, 5000);
-
-                                // setPrevPoint(currentPoint)
-                                // setCurrentPoint(POINT * (currentIndex + value))
-                                // setCurrentIndex(currentIndex + value)
                             }}
                             size={100}
                         />
                     </div>
                 </div>
             </main>
+
+            <Question
+                isOpen={isOpen}
+                onCancel={() => setIsOpen(false)}
+                onResult={onResult}
+            />
         </>
     );
 }

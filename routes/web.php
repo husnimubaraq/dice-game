@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Api\{
+    QuestionController
+};
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,5 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/question', [QuestionController::class, 'index'])->name('question');
+Route::post('/question/check', [QuestionController::class, 'checkAnswer'])->name('question.check');
 
 require __DIR__.'/auth.php';
