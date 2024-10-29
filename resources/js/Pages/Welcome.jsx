@@ -68,14 +68,36 @@ export default function Welcome({ }) {
         }else{
             let newData = [...players]
 
-            newData[turn] = {
-                ...newData[turn],
-                prevPoint: newData[turn].currentPoint,
-                currentPoint: POINT * (newData[turn].currentIndex - value.point),
-                currentIndex: newData[turn].currentIndex - value.point
+            const current = (newData[turn].currentIndex - value.point)
+
+            if(current < 0){
+                newData[turn] = {
+                    ...newData[turn],
+                    prevPoint: 0.0,
+                    currentPoint: 0.0,
+                    currentIndex: 0.0
+                }
+
+                setPlayers(newData)
+
+                setTurn(previousVal => {
+                    if (previousVal < newData.length - 1) {
+                        return previousVal + 1;
+                    }
+                    return 0;
+                });
+            }else{
+                newData[turn] = {
+                    ...newData[turn],
+                    prevPoint: newData[turn].currentPoint,
+                    currentPoint: POINT * (newData[turn].currentIndex - value.point),
+                    currentIndex: newData[turn].currentIndex - value.point
+                }
+
+                setPlayers(newData)
             }
 
-            setPlayers(newData)
+
         }
     }
 
@@ -113,7 +135,7 @@ export default function Welcome({ }) {
                     end: player.currentPoint,
                 },
                 transformOrigin: "50% 50%",
-                duration: 5,
+                duration: 3,
                 ease: "power1.inOut",
             });
         }
@@ -138,7 +160,7 @@ export default function Welcome({ }) {
                     }
 
                     setPlayers(newData)
-                }, 5000)
+                }, 3000)
             } else if (cross.type === "next") {
                 setTimeout(() => {
                     newData[turn] = {
@@ -149,11 +171,11 @@ export default function Welcome({ }) {
                     }
 
                     setPlayers(newData)
-                }, 5000)
+                }, 3000)
             } else if(cross.type === "question") {
                 setTimeout(() => {
                     setIsOpen(true)
-                }, 5000)
+                }, 3000)
             } else {
                 setTurn(previousVal => {
                     if (previousVal < players.length - 1) {
@@ -219,6 +241,7 @@ export default function Welcome({ }) {
                     ))}
                     <div className='absolute -top-[20%] right-0'>
                         <Dice
+                            cheatValue={2}
                             onRoll={(value) => {
                                 let newData = [...players]
 
