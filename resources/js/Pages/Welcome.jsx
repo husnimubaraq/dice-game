@@ -1,17 +1,17 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 import { Fragment, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import Dice from "react-dice-roll";
+import { CrossPath } from './CrossPath';
+import { dataCross } from './Data';
+import { Question } from './Question';
 
 gsap.registerPlugin(MotionPathPlugin);
 
 import "./index.css"
-// import { Map } from './Map'
-import { CrossPath } from './CrossPath';
-import { dataCross } from './Data';
-import { Question } from './Question';
+import { Winner } from './Winner';
 
 const POINT = 0.02
 
@@ -19,6 +19,26 @@ export default function Welcome({ }) {
 
     const [turn, setTurn] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
+    const [isOpenWinner, setIsOpenWinner] = useState(true)
+
+    const [scores, setScores] = useState([
+        {
+            id: 0,
+            score: 0
+        },
+        {
+            id: 1,
+            score: 0
+        },
+        {
+            id: 2,
+            score: 0
+        },
+        {
+            id: 3,
+            score: 0
+        }
+    ])
 
     const [players, setPlayers] = useState([
         {
@@ -53,51 +73,83 @@ export default function Welcome({ }) {
 
     const onResult = (value) => {
         setIsOpen(false)
-        if(value.status){
-            let newData = [...players]
+
+        let newData = [...players]
+        let newScores = [...scores]
+
+        if (value.status) {
+            const nextIndex = (newData[turn].currentIndex + value.step)
+
+            if (newData[turn].currentIndex === dataCross.length) {
+                newScores[turn] = {
+                    ...newScores[turn],
+                    score: newScores[turn].score + 100
+                }
+
+                setScores(newScores)
+
+                setIsOpenWinner(true)
+                return
+            } else if (nextIndex > dataCross.length) {
+                const diff = Math.abs(nextIndex - dataCross.length)
+
+                newScores[turn] = {
+                    ...newScores[turn],
+                    score: newScores[turn].score + value.point
+                }
+
+                newData[turn] = {
+                    ...newData[turn],
+                    prevPoint: newData[turn].currentPoint,
+                    currentPoint: POINT * (newData[turn].currentIndex + diff),
+                    currentIndex: newData[turn].currentIndex + diff
+                }
+            } else {
+                newScores[turn] = {
+                    ...newScores[turn],
+                    score: newScores[turn].score + value.point
+                }
+
+                newData[turn] = {
+                    ...newData[turn],
+                    prevPoint: newData[turn].currentPoint,
+                    currentPoint: POINT * nextIndex,
+                    currentIndex: nextIndex
+                }
+            }
+
+            setScores(newScores)
+            setPlayers(newData)
+
+        } else {
+            newScores[turn] = {
+                ...newScores[turn],
+                score: newScores[turn].score < 0 ? 0 : newScores[turn].score - value.point
+            }
+
+            setScores(newScores)
+
+            const current = (newData[turn].currentIndex - value.step)
 
             newData[turn] = {
                 ...newData[turn],
                 prevPoint: newData[turn].currentPoint,
-                currentPoint: POINT * (newData[turn].currentIndex + value.point),
-                currentIndex: newData[turn].currentIndex + value.point
+                currentPoint: POINT * (newData[turn].currentIndex - value.step),
+                currentIndex: newData[turn].currentIndex - value.step
             }
 
             setPlayers(newData)
 
-        }else{
-            let newData = [...players]
-
-            const current = (newData[turn].currentIndex - value.point)
-
-            if(current < 0){
-                newData[turn] = {
-                    ...newData[turn],
-                    prevPoint: 0.0,
-                    currentPoint: 0.0,
-                    currentIndex: 0.0
-                }
-
-                setPlayers(newData)
-
-                setTurn(previousVal => {
-                    if (previousVal < newData.length - 1) {
-                        return previousVal + 1;
-                    }
-                    return 0;
-                });
-            }else{
-                newData[turn] = {
-                    ...newData[turn],
-                    prevPoint: newData[turn].currentPoint,
-                    currentPoint: POINT * (newData[turn].currentIndex - value.point),
-                    currentIndex: newData[turn].currentIndex - value.point
-                }
-
-                setPlayers(newData)
+            if (current < 1) {
+                setTimeout(() => {
+                    setTurn(previousVal => {
+                        if (previousVal < newData.length - 1) {
+                            return previousVal + 1;
+                        }
+                        return 0;
+                    });
+                }, 3000);
             }
-
-
         }
     }
 
@@ -122,8 +174,6 @@ export default function Welcome({ }) {
     useEffect(() => {
         const player = players.find(x => x.id === turn)
 
-        console.log('player: ', player)
-
         if (player) {
             gsap.to(`#div-${player.id}`, {
                 motionPath: {
@@ -144,14 +194,20 @@ export default function Welcome({ }) {
     useEffect(() => {
         const cross = dataCross.find((_, i) => i === players[turn].currentIndex - 1)
 
-        console.log('cross: ', cross)
-
         if (cross) {
 
             let newData = [...players]
+            let newScores = [...scores]
 
             if (cross.type === "previous") {
                 setTimeout(() => {
+                    newScores[turn] = {
+                        ...newScores[turn],
+                        score: newScores[turn].score - 3
+                    }
+
+                    setScores(newScores)
+
                     newData[turn] = {
                         ...newData[turn],
                         prevPoint: newData[turn].currentPoint,
@@ -163,6 +219,13 @@ export default function Welcome({ }) {
                 }, 3000)
             } else if (cross.type === "next") {
                 setTimeout(() => {
+                    newScores[turn] = {
+                        ...newScores[turn],
+                        score: newScores[turn].score + 3
+                    }
+
+                    setScores(newScores)
+
                     newData[turn] = {
                         ...newData[turn],
                         prevPoint: newData[turn].currentPoint,
@@ -172,7 +235,7 @@ export default function Welcome({ }) {
 
                     setPlayers(newData)
                 }, 3000)
-            } else if(cross.type === "question") {
+            } else if (cross.type === "question") {
                 setTimeout(() => {
                     setIsOpen(true)
                 }, 3000)
@@ -187,6 +250,7 @@ export default function Welcome({ }) {
         }
     }, [players])
 
+    console.log('scores: ', scores)
 
     return (
         <>
@@ -196,26 +260,11 @@ export default function Welcome({ }) {
                     src='/assets/images/bg-3.png'
                     className='w-full h-full object-contain'
                 />
-                {/* <Map
-                    className="w-[2288px] h-[1668px]"
-                /> */}
-                {/* <div className='absolute -bottom-5 left-[30%]'>
-                    <CrossPath
-                        id="cross-0"
-                        className="w-[983px] h-[775px] !text-[#FF6F00]"
-                    />
-                    <div id="div-cross">
-                        <img
-                            src='/assets/icons/question.png'
-                            className='w-[100px] h-[100px] object-contain'
-                        />
-                    </div>
-                </div> */}
                 <div className='absolute -bottom-2 left-[30%]'>
 
                     <CrossPath
                         id="path"
-                        className="w-[983px] h-[775px]"
+                        className="w-[983px] h-[775px] "
                     />
                     {players.map((player) => (
                         <div key={player.id} id={`div-${player.id}`} className='z-30 absolute top-[5%] left-[30%] h-[50px] w-[50px]'>
@@ -241,17 +290,29 @@ export default function Welcome({ }) {
                     ))}
                     <div className='absolute -top-[20%] right-0'>
                         <Dice
-                            cheatValue={2}
+                            // cheatValue={5}
                             onRoll={(value) => {
                                 let newData = [...players]
 
-                                const currentTurn = turn
+                                const nextIndex = (newData[turn].currentIndex + value)
 
-                                newData[currentTurn] = {
-                                    ...newData[currentTurn],
-                                    prevPoint: newData[currentTurn].currentPoint,
-                                    currentPoint: POINT * (newData[currentTurn].currentIndex + value),
-                                    currentIndex: newData[currentTurn].currentIndex + value
+                                if (nextIndex > dataCross.length) {
+                                    const diff = Math.abs(nextIndex - (dataCross.length - 1))
+
+
+                                    newData[turn] = {
+                                        ...newData[turn],
+                                        prevPoint: newData[turn].currentPoint,
+                                        currentPoint: POINT * (newData[turn].currentIndex + diff),
+                                        currentIndex: newData[turn].currentIndex + diff
+                                    }
+                                } else {
+                                    newData[turn] = {
+                                        ...newData[turn],
+                                        prevPoint: newData[turn].currentPoint,
+                                        currentPoint: POINT * nextIndex,
+                                        currentIndex: newData[turn].currentIndex + value
+                                    }
                                 }
                                 setPlayers(newData)
                             }}
@@ -265,6 +326,11 @@ export default function Welcome({ }) {
                 isOpen={isOpen}
                 onCancel={() => setIsOpen(false)}
                 onResult={onResult}
+            />
+
+            <Winner
+                isOpen={isOpenWinner}
+                onCancel={() => setIsOpenWinner(false)}
             />
         </>
     );

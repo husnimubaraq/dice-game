@@ -14,6 +14,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                arista: ['Arista', ...defaultTheme.fontFamily.sans],
+                bubble: ['Bubble', ...defaultTheme.fontFamily.sans],
             },
         },
     },

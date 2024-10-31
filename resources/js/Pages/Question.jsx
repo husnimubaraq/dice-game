@@ -32,6 +32,8 @@ export const Question = ({ isOpen, onCancel = () => { }, onResult }) => {
         onResult && onResult(data)
     }
 
+    if(!isOpen) return null
+
     return (
         <Dialog open={isOpen} as="div" className="relative z-[999] focus:outline-none" onClose={onCancel}>
             <div className="fixed inset-0 z-[999] w-screen overflow-y-auto">
@@ -49,7 +51,7 @@ export const Question = ({ isOpen, onCancel = () => { }, onResult }) => {
                             />
                         </div>
                         <div className='relative flex flex-col p-[30px] bg-black/30  rounded-[50px]'>
-                            <p className="mt-2 text-4xl text-white text-center">
+                            <p className="mt-2 text-4xl text-white text-center font-arista">
                                 {question.question}
                             </p>
                             <div className='flex flex-col gap-7 mt-10'>
@@ -57,7 +59,7 @@ export const Question = ({ isOpen, onCancel = () => { }, onResult }) => {
                                     <Fragment key={index}>
                                         <button
                                             onClick={() => onCheck(item)}
-                                            className='py-5 rounded-full w-full bg-yellow-500 hover:bg-yellow-500/80 text-xl'
+                                            className='py-5 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-2xl text-white hover:text-white font-arista'
                                         >
                                             {item}
                                         </button>

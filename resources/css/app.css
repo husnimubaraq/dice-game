@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "Arista";
+    src: url("fonts/Arista20AlternateRegular-jy89.ttf");
+}
+
+@font-face {
+    font-family: "Bubble";
+    src: url("fonts/BubbleboddyExtralight-z54X.ttf");
+}

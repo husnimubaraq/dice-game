@@ -22,6 +22,7 @@ class QuestionController extends Controller
             {
                 "question": "Siapa nama tokoh yang memimpin Perang Diponegoro?",
                 "correct_answer": "Pangeran Diponegoro",
+                "point": 8,
                 "incorrect_answers": [
                     "Pangeran Antasari",
                     "Sultan Agung",
@@ -31,6 +32,7 @@ class QuestionController extends Controller
             {
                 "question": "Perang Diponegoro terjadi antara tahun?",
                 "correct_answer": "1825-1830",
+                "point": 10,
                 "incorrect_answers": [
                     "1815-1820",
                     "1835-1840",
@@ -40,6 +42,7 @@ class QuestionController extends Controller
             {
                 "question": "Pangeran Diponegoro berasal dari wilayah?",
                 "correct_answer": "Belanda",
+                "point": 13,
                 "incorrect_answers": [
                     "Portugis",
                     "Inggris",
@@ -49,6 +52,7 @@ class QuestionController extends Controller
             {
                 "question": "Perang Diponegoro juga dikenal dengan nama lain yaitu?",
                 "correct_answer": "Perang Jawa",
+                "point": 15,
                 "incorrect_answers": [
                     "Perang Padri",
                     "Perang Aceh",
@@ -58,6 +62,7 @@ class QuestionController extends Controller
             {
                 "question": "Pangeran Diponegoro ditangkap oleh Belanda di?",
                 "correct_answer": "Magelang",
+                "point": 18,
                 "incorrect_answers": [
                     "Jakarta",
                     "Surabaya",
@@ -67,6 +72,7 @@ class QuestionController extends Controller
             {
                 "question": "Setelah ditangkap, Pangeran Diponegoro diasingkan ke kota?",
                 "correct_answer": "Makassar",
+                "point": 25,
                 "incorrect_answers": [
                     "Medan",
                     "Palembang",
@@ -76,6 +82,7 @@ class QuestionController extends Controller
             {
                 "question": "Penyebab utama Perang Diponegoro adalah?",
                 "correct_answer": "Campur tangan Belanda dalam urusan tanah",
+                "point": 28,
                 "incorrect_answers": [
                     "Masalah ekonomi",
                     "Konflik kerajaan",
@@ -85,6 +92,7 @@ class QuestionController extends Controller
             {
                 "question": "Perang Diponegoro dianggap salah satu perang besar di Indonesia karena berlangsung selama?",
                 "correct_answer": "5 tahun lebih",
+                "point": 30,
                 "incorrect_answers": [
                     "2 tahun",
                     "3 tahun",
@@ -126,19 +134,21 @@ class QuestionController extends Controller
 
         $data = $this->questions;
 
-        $filteredItems = array_filter($data, function ($item) use ($searchAnswer) {
+        $filteredItems = collect($data)->first(function ($item) use ($searchAnswer) {
             return $item['correct_answer'] === $searchAnswer;
         });
 
-        if(!empty($filteredItems)){
+        if($filteredItems){
             return response()->json([
                 'status' => true,
-                'point' => 2
+                'step' => 2,
+                'point' => $filteredItems["point"],
             ]);
         }else{
             return response()->json([
                 'status' => false,
-                'point' => 2
+                'step' => 2,
+                'point' => 5,
             ]);
         }
     }
