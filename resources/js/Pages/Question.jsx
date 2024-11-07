@@ -3,13 +3,15 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 
-export const Question = ({ isOpen, onCancel = () => { }, onResult }) => {
+export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { }, onResult }) => {
 
     const [question, setQuestion] = useState(null)
 
     const init = async () => {
         if(isOpen){
-            const { data } = await axios.get(route('question'))
+            const { data } = await axios.get(route('question', {
+                number: selectedQuestion.number
+            }))
 
             setQuestion(data)
         }
@@ -24,7 +26,7 @@ export const Question = ({ isOpen, onCancel = () => { }, onResult }) => {
     const onCheck = async (answer) => {
 
         const body = {
-            answer
+            answer,
         }
 
         const { data } = await axios.post(route('question.check'), body)
@@ -51,7 +53,7 @@ export const Question = ({ isOpen, onCancel = () => { }, onResult }) => {
                             />
                         </div>
                         <div className='relative flex flex-col p-[30px] bg-black/30  rounded-[50px]'>
-                            <p className="mt-2 text-4xl text-white text-center font-arista">
+                            <p className="mt-2 text-2xl text-white text-center">
                                 {question.question}
                             </p>
                             <div className='flex flex-col gap-7 mt-10'>
@@ -59,7 +61,7 @@ export const Question = ({ isOpen, onCancel = () => { }, onResult }) => {
                                     <Fragment key={index}>
                                         <button
                                             onClick={() => onCheck(item)}
-                                            className='py-5 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-2xl text-white hover:text-white font-arista'
+                                            className='py-5 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-sm text-white hover:text-white'
                                         >
                                             {item}
                                         </button>

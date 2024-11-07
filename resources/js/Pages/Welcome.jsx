@@ -13,13 +13,14 @@ gsap.registerPlugin(MotionPathPlugin);
 import "./index.css"
 import { Winner } from './Winner';
 
-const POINT = 0.02
+const POINT = 0.03
 
 export default function Welcome({ }) {
 
     const [turn, setTurn] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
-    const [isOpenWinner, setIsOpenWinner] = useState(true)
+    const [isOpenWinner, setIsOpenWinner] = useState(false)
+    const [winner, setWinner] = useState(null)
 
     const [scores, setScores] = useState([
         {
@@ -44,6 +45,7 @@ export default function Welcome({ }) {
         {
             id: 0,
             prevPoint: 0.0,
+            name: "Player 1",
             currentPoint: 0.0,
             currentIndex: 0,
             image: "/assets/images/character-1.png"
@@ -51,24 +53,27 @@ export default function Welcome({ }) {
         {
             id: 1,
             prevPoint: 0.0,
+            name: "Player 2",
             currentPoint: 0.0,
             currentIndex: 0,
             image: "/assets/images/character-2.png"
         },
-        {
-            id: 2,
-            prevPoint: 0.0,
-            currentPoint: 0.0,
-            currentIndex: 0,
-            image: "/assets/images/character-3.png"
-        },
-        {
-            id: 3,
-            prevPoint: 0.0,
-            currentPoint: 0.0,
-            currentIndex: 0,
-            image: "/assets/images/character-4.png"
-        }
+        // {
+        //     id: 2,
+        //     prevPoint: 0.0,
+        //     name: "Player 3",
+        //     currentPoint: 0.0,
+        //     currentIndex: 0,
+        //     image: "/assets/images/character-3.png"
+        // },
+        // {
+        //     id: 3,
+        //     prevPoint: 0.0,
+        //     name: "Player 4",
+        //     currentPoint: 0.0,
+        //     currentIndex: 0,
+        //     image: "/assets/images/character-4.png"
+        // }
     ])
 
     const onResult = (value) => {
@@ -87,7 +92,10 @@ export default function Welcome({ }) {
                 }
 
                 setScores(newScores)
-
+                setWinner({
+                    player: newData[turn],
+                    score: newScores[turn]
+                })
                 setIsOpenWinner(true)
                 return
             } else if (nextIndex > dataCross.length) {
@@ -326,11 +334,13 @@ export default function Welcome({ }) {
                 isOpen={isOpen}
                 onCancel={() => setIsOpen(false)}
                 onResult={onResult}
+                data={dataCross.find((_, i) => i === players[turn].currentIndex - 1)}
             />
 
             <Winner
                 isOpen={isOpenWinner}
                 onCancel={() => setIsOpenWinner(false)}
+                data={winner}
             />
         </>
     );

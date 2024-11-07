@@ -5,12 +5,14 @@ import { XMarkIcon } from '@heroicons/react/24/solid'
 
 import "./winner.css"
 
-export const Winner = ({ isOpen, onCancel = () => { } }) => {
+export const Winner = ({ isOpen, data, onCancel = () => { } }) => {
 
     if (!isOpen) return null
 
+    console.log('data: ', data)
+
     return (
-        <Dialog open={isOpen} as="div" className="relative z-[99] focus:outline-none" onClose={onCancel}>
+        <Dialog open={isOpen} as="div" className="relative z-[99] focus:outline-none"  onClose={onCancel}>
             <div className="fixed inset-0 z-[99] w-screen overflow-y-auto">
                 <div
                     className="flex min-h-full items-center justify-center p-4"
@@ -49,9 +51,10 @@ export const Winner = ({ isOpen, onCancel = () => { } }) => {
                             <div className="confetti-piece"></div>
                         </div>
                         <div className='relative flex flex-col items-center justify-center h-[250px] gap-10'>
-                            <div className='text-2xl font-arista text-center text-yellow-400'>
+                            <div className='text-2xl text-center text-yellow-400 flex flex-col gap-3'>
                                 <p>Pemenangnya adalah</p>
-                                <p className='text-5xl'>Husni</p>
+                                <p className='text-5xl'>{data.player.name}</p>
+                                <p className='text-3xl'>Skor: {data.score.score}</p>
                             </div>
                             <div>
                                 <Button title="Home" className="w-[100px]" />
