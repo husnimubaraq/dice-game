@@ -11,7 +11,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/player', [HomeController::class, 'player'])->name('player');
+Route::get('/character', [HomeController::class, 'character'])->name('character');
 
 Route::get('/play', function () {
     return Inertia::render('Welcome');

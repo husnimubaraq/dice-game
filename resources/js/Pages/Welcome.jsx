@@ -21,60 +21,11 @@ export default function Welcome({ }) {
     const [isOpen, setIsOpen] = useState(false)
     const [isOpenWinner, setIsOpenWinner] = useState(false)
     const [winner, setWinner] = useState(null)
+    const [logs, setLogs] = useState([])
 
-    const [scores, setScores] = useState([
-        {
-            id: 0,
-            score: 0
-        },
-        {
-            id: 1,
-            score: 0
-        },
-        {
-            id: 2,
-            score: 0
-        },
-        {
-            id: 3,
-            score: 0
-        }
-    ])
+    const [scores, setScores] = useState([])
 
-    const [players, setPlayers] = useState([
-        {
-            id: 0,
-            prevPoint: 0.0,
-            name: "Player 1",
-            currentPoint: 0.0,
-            currentIndex: 0,
-            image: "/assets/images/character-1.png"
-        },
-        {
-            id: 1,
-            prevPoint: 0.0,
-            name: "Player 2",
-            currentPoint: 0.0,
-            currentIndex: 0,
-            image: "/assets/images/character-2.png"
-        },
-        // {
-        //     id: 2,
-        //     prevPoint: 0.0,
-        //     name: "Player 3",
-        //     currentPoint: 0.0,
-        //     currentIndex: 0,
-        //     image: "/assets/images/character-3.png"
-        // },
-        // {
-        //     id: 3,
-        //     prevPoint: 0.0,
-        //     name: "Player 4",
-        //     currentPoint: 0.0,
-        //     currentIndex: 0,
-        //     image: "/assets/images/character-4.png"
-        // }
-    ])
+    const [players, setPlayers] = useState([])
 
     const onResult = (value) => {
         setIsOpen(false)
@@ -91,6 +42,11 @@ export default function Welcome({ }) {
                     score: newScores[turn].score + 100
                 }
 
+                setLogs([
+                    ...logs,
+                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + 100)}`
+                ])
+
                 setScores(newScores)
                 setWinner({
                     player: newData[turn],
@@ -106,6 +62,11 @@ export default function Welcome({ }) {
                     score: newScores[turn].score + value.point
                 }
 
+                setLogs([
+                    ...logs,
+                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + value.point)}`
+                ])
+
                 newData[turn] = {
                     ...newData[turn],
                     prevPoint: newData[turn].currentPoint,
@@ -117,6 +78,11 @@ export default function Welcome({ }) {
                     ...newScores[turn],
                     score: newScores[turn].score + value.point
                 }
+
+                setLogs([
+                    ...logs,
+                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + value.point)}`
+                ])
 
                 newData[turn] = {
                     ...newData[turn],
@@ -130,10 +96,17 @@ export default function Welcome({ }) {
             setPlayers(newData)
 
         } else {
+            const score = newScores[turn].score < 0 ? 0 : newScores[turn].score - value.point
+
             newScores[turn] = {
                 ...newScores[turn],
-                score: newScores[turn].score < 0 ? 0 : newScores[turn].score - value.point
+                score: score
             }
+
+            setLogs([
+                ...logs,
+                `Player ${newData[turn].name} nilai berkurang : ${(score)}`
+            ])
 
             setScores(newScores)
 
@@ -160,6 +133,23 @@ export default function Welcome({ }) {
             }
         }
     }
+
+    useEffect(() => {
+        let dataPlayers = localStorage.getItem('players')
+
+        if (dataPlayers) {
+            dataPlayers = JSON.parse(dataPlayers)
+            const dataScores = []
+            for (let item of dataPlayers) {
+                dataScores.push({
+                    id: item.id,
+                    score: 0
+                })
+            }
+            setScores(dataScores)
+            setPlayers(dataPlayers)
+        }
+    }, [])
 
     useEffect(() => {
         for (let i = 0; i < dataCross.length; i++) {
@@ -200,65 +190,77 @@ export default function Welcome({ }) {
     }, [players])
 
     useEffect(() => {
-        const cross = dataCross.find((_, i) => i === players[turn].currentIndex - 1)
+        if (players.length > 0) {
+            const cross = dataCross.find((_, i) => i === players[turn].currentIndex - 1)
 
-        if (cross) {
+            if (cross) {
 
-            let newData = [...players]
-            let newScores = [...scores]
+                let newData = [...players]
+                let newScores = [...scores]
 
-            if (cross.type === "previous") {
-                setTimeout(() => {
-                    newScores[turn] = {
-                        ...newScores[turn],
-                        score: newScores[turn].score - 3
-                    }
+                if (cross.type === "previous") {
+                    setTimeout(() => {
+                        newScores[turn] = {
+                            ...newScores[turn],
+                            score: newScores[turn].score - 3
+                        }
 
-                    setScores(newScores)
+                        setLogs([
+                            ...logs,
+                            `Player ${newData[turn].name} nilai berkurang : ${(newScores[turn].score - 3)}`
+                        ])
 
-                    newData[turn] = {
-                        ...newData[turn],
-                        prevPoint: newData[turn].currentPoint,
-                        currentPoint: POINT * (newData[turn].currentIndex - 1),
-                        currentIndex: newData[turn].currentIndex - 1
-                    }
+                        setScores(newScores)
 
-                    setPlayers(newData)
-                }, 3000)
-            } else if (cross.type === "next") {
-                setTimeout(() => {
-                    newScores[turn] = {
-                        ...newScores[turn],
-                        score: newScores[turn].score + 3
-                    }
+                        newData[turn] = {
+                            ...newData[turn],
+                            prevPoint: newData[turn].currentPoint,
+                            currentPoint: POINT * (newData[turn].currentIndex - 1),
+                            currentIndex: newData[turn].currentIndex - 1
+                        }
 
-                    setScores(newScores)
+                        setPlayers(newData)
+                    }, 3000)
+                } else if (cross.type === "next") {
+                    setTimeout(() => {
+                        newScores[turn] = {
+                            ...newScores[turn],
+                            score: newScores[turn].score + 3
+                        }
 
-                    newData[turn] = {
-                        ...newData[turn],
-                        prevPoint: newData[turn].currentPoint,
-                        currentPoint: POINT * (newData[turn].currentIndex + 1),
-                        currentIndex: newData[turn].currentIndex + 1
-                    }
+                        setLogs([
+                            ...logs,
+                            `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + 3)}`
+                        ])
 
-                    setPlayers(newData)
-                }, 3000)
-            } else if (cross.type === "question") {
-                setTimeout(() => {
-                    setIsOpen(true)
-                }, 3000)
-            } else {
-                setTurn(previousVal => {
-                    if (previousVal < players.length - 1) {
-                        return previousVal + 1;
-                    }
-                    return 0;
-                });
+                        setScores(newScores)
+
+                        newData[turn] = {
+                            ...newData[turn],
+                            prevPoint: newData[turn].currentPoint,
+                            currentPoint: POINT * (newData[turn].currentIndex + 1),
+                            currentIndex: newData[turn].currentIndex + 1
+                        }
+
+                        setPlayers(newData)
+                    }, 3000)
+                } else if (cross.type === "question") {
+                    setTimeout(() => {
+                        setIsOpen(true)
+                    }, 3000)
+                } else {
+                    setTurn(previousVal => {
+                        if (previousVal < players.length - 1) {
+                            return previousVal + 1;
+                        }
+                        return 0;
+                    });
+                }
             }
         }
     }, [players])
 
-    console.log('scores: ', scores)
+    const logsFilterred = logs.slice(logs.length > 5 ? logs.length - 5 : 0, logs.length > 5 ? logs.length : 5).reverse()
 
     return (
         <>
@@ -296,9 +298,49 @@ export default function Welcome({ }) {
                             </div>
                         </Fragment>
                     ))}
+                    <div className='absolute left-0 -top-[22%] z-[30]'>
+                        <div className="w-[358px] h-[261px] relative">
+                            <img
+                                src='/assets/images/bg-info-2.png'
+                                className='w-full h-full object-cover'
+                            />
+                            <div className='absolute inset-0 z-50'>
+                                <div className='flex flex-col-reverse gap-3 relative overflow-hidden px-12 h-[200px] mt-3'>
+                                    {logsFilterred.map((item, index) => (
+                                        <Fragment key={index}>
+                                            <p>{item}</p>
+                                        </Fragment>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {players.length > 0 && (
+                        <div className='absolute -left-[20%] -top-[20%]'>
+                            <div
+                                className="w-[150px] h-[150px] relative"
+                            >
+                                <img
+                                    src='/assets/images/bg-character.png'
+                                    className='w-full h-full object-contain'
+                                />
+                                <div className="absolute -top-3 left-0 right-0 flex flex-col items-center">
+                                    <div className="flex flex-col items-center bg-[#dbbe9d] rounded-md w-[90px] py-1 relative overflow-hidden">
+                                        <h1 className="font-bounce">{players[turn].name}</h1>
+                                    </div>
+                                </div>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                    <img
+                                        src={players[turn].image}
+                                        className='w-[100px] h-[100px] object-contain'
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     <div className='absolute -top-[20%] right-0'>
                         <Dice
-                            // cheatValue={5}
+                            cheatValue={1}
                             onRoll={(value) => {
                                 let newData = [...players]
 
@@ -330,12 +372,14 @@ export default function Welcome({ }) {
                 </div>
             </main>
 
-            <Question
-                isOpen={isOpen}
-                onCancel={() => setIsOpen(false)}
-                onResult={onResult}
-                data={dataCross.find((_, i) => i === players[turn].currentIndex - 1)}
-            />
+            {players.length > 0 && (
+                <Question
+                    isOpen={isOpen}
+                    onCancel={() => setIsOpen(false)}
+                    onResult={onResult}
+                    data={dataCross.find((_, i) => i === players[turn].currentIndex - 1)}
+                />
+            )}
 
             <Winner
                 isOpen={isOpenWinner}

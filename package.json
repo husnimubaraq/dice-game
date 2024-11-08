@@ -25,6 +25,7 @@
         "@heroicons/react": "^2.1.5",
         "gsap": "^3.12.5",
         "react-dice-roll": "^1.2.2",
+        "tailwind-merge": "^2.5.4",
         "use-deep-compare-effect": "^1.8.1"
     }
 }
