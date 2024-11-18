@@ -7,7 +7,7 @@ export default function Home({ }) {
         <div
             className="flex flex-col h-screen w-screen bg-cover bg-top"
             style={{
-                backgroundImage: "url('/assets/images/bg-home-2.jpeg')"
+                backgroundImage: "url('/assets/images/bg-2.jpg')"
             }}
         >
             <div className="absolute inset-0 bg-black/50" />
