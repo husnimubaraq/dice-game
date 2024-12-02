@@ -131,7 +131,7 @@ class QuestionController extends Controller
             },
             {
                 "question": "Pengasingan Pangeran Diponegoro ke Makassar setelah Perang Jawa (1825-1830) dianggap sebagai tindakan penting yang dilakukan oleh Belanda untuk mengamankan kendalinya atas Jawa. Evaluasilah dampak pengasingan ini terhadap perjuangan masyarakat jawa dan kekuasaan Belanda. Mana di antara pernyataan berikut yang paling tepat menggambarkan dampak pengasingan Pangeran Diponegoro?",
-                "correct_answer": "Pengasingan Pangeran Diponegoro ke Makassar memutuskan jalur komunikasi dan mengurangi semangat perjuangan rakyat jawa terhadap Belanda",
+                "correct_answer": "Pengasingan Pangeran Diponegoro ini mampu menginspirasi masyarakat jawa untuk terus melakukan perlawanan dan Belanda mampu untuk mengamankan kekuasaannya",
                 "point": 9,
                 "incorrect_answers": [
                     "Pengasingan ini justru memicu gelombang baru perlawanan rakyat jawa terhadap Belanda",
@@ -141,7 +141,7 @@ class QuestionController extends Controller
             },
             {
                 "question": "Perang Jawa (1825-1830) bukan hanya sekadar konflik bersenjata, tetapi juga memiliki dampak signifikan terhadap aspek politik Belanda di Indonesia. Evaluasilah Perang Jawa ini dapat mempengaruhi kebijakan politik Belanda. Mana di antara pernyataan berikut yang paling tepat menggambarkan pengaruh Perang Jawa terhadap kebijakan politik Belanda?",
-                "correct_answer": "Perang Jawa mendorong restrukturisasi dalam pemerintahan Belanda, dengan penekanan pada sistem kontrol yang lebih ketat dan peningkatan militerisasi untuk mencegah perlawanan",
+                "correct_answer": "Perang Jawa mengakibatkan restrukturisasi pemerintahan Belanda, dengan penekanan pada sistem kontrol yang lebih ketat dan peningkatan militerisasi untuk mencegah perlawanan",
                 "point": 9,
                 "incorrect_answers": [
                     "Perang Jawa memperkuat pengaruh Belanda khususnya di wilayah Jawa dan wilayah Indonesia lainnya",
@@ -219,7 +219,7 @@ class QuestionController extends Controller
             return response()->json([
                 'status' => false,
                 'step' => 2,
-                'point' => 5,
+                'point' => 1,
             ]);
         }
     }

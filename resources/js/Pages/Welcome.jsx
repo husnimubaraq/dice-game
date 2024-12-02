@@ -12,6 +12,7 @@ gsap.registerPlugin(MotionPathPlugin);
 
 import "./index.css"
 import { Winner } from './Winner';
+import dayjs from 'dayjs';
 
 const POINT = 0.03
 
@@ -42,16 +43,43 @@ export default function Welcome({ }) {
                     score: newScores[turn].score + 100
                 }
 
-                setLogs([
+                const dataLog = [
                     ...logs,
-                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + 100)}`
-                ])
+                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
+                ]
+
+                setLogs(dataLog)
 
                 setScores(newScores)
-                setWinner({
+                const dataFinal = {
                     player: newData[turn],
                     score: newScores[turn]
-                })
+                }
+                setWinner(dataFinal)
+
+                let dataHistories = localStorage.getItem('histories')
+
+                if(dataHistories){
+                    dataHistories = JSON.parse(dataHistories)
+                    dataHistories.push({
+                        winner: dataFinal,
+                        logs: dataLog,
+                        data: newScores,
+                        id: new Date().getTime(),
+                        date: dayjs().format("DD MMMM YYYY h:mm")
+                    })
+                    localStorage.setItem('histories', JSON.stringify(dataHistories))
+                }else{
+                    localStorage.setItem('histories', JSON.stringify([
+                        {
+                            winner: dataFinal,
+                            logs: dataLog,
+                            data: newScores,
+                            id: new Date().getTime(),
+                            date: dayjs().format("DD MMMM YYYY h:mm")
+                        }
+                    ]))
+                }
                 setIsOpenWinner(true)
                 return
             } else if (nextIndex > dataCross.length) {
@@ -64,7 +92,7 @@ export default function Welcome({ }) {
 
                 setLogs([
                     ...logs,
-                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + value.point)}`
+                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
                 ])
 
                 newData[turn] = {
@@ -81,7 +109,7 @@ export default function Welcome({ }) {
 
                 setLogs([
                     ...logs,
-                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + value.point)}`
+                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
                 ])
 
                 newData[turn] = {
@@ -143,7 +171,9 @@ export default function Welcome({ }) {
             for (let item of dataPlayers) {
                 dataScores.push({
                     id: item.id,
-                    score: 0
+                    name: item.name,
+                    score: 0,
+                    image: item.image
                 })
             }
             setScores(dataScores)
@@ -207,7 +237,7 @@ export default function Welcome({ }) {
 
                         setLogs([
                             ...logs,
-                            `Player ${newData[turn].name} nilai berkurang : ${(newScores[turn].score - 3)}`
+                            `Player ${newData[turn].name} nilai berkurang : ${(newScores[turn].score)}`
                         ])
 
                         setScores(newScores)
@@ -230,7 +260,7 @@ export default function Welcome({ }) {
 
                         setLogs([
                             ...logs,
-                            `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score + 3)}`
+                            `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
                         ])
 
                         setScores(newScores)
@@ -340,7 +370,7 @@ export default function Welcome({ }) {
                     )}
                     <div className='absolute -top-[20%] right-0'>
                         <Dice
-                            cheatValue={1}
+                            // cheatValue={3}
                             onRoll={(value) => {
                                 let newData = [...players]
 

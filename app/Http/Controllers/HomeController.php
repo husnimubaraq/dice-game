@@ -27,4 +27,19 @@ class HomeController extends Controller
     {
         return Inertia::render('Character');
     }
+
+    public function materi(Request $request)
+    {
+        return Inertia::render('Materi');
+    }
+
+    public function riwayat(Request $request)
+    {
+        return Inertia::render('Riwayat');
+    }
+
+    public function leaderboard(Request $request)
+    {
+        return Inertia::render('Leaderboard');
+    }
 }
