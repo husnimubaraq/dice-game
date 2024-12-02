@@ -267,7 +267,7 @@ export default function Welcome({ }) {
             <Head title="Welcome" />
             <main className='flex flex-col h-screen w-screen relative overflow-hidden'>
                 <img
-                    src='/assets/images/bg-3.png'
+                    src='/assets/images/bg-4.png'
                     className='w-full h-full object-contain'
                 />
                 <div className='absolute -bottom-2 left-[30%]'>

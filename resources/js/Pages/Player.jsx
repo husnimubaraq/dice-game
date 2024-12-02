@@ -38,15 +38,15 @@ export default function Player({ }) {
 
     return (
         <div
-            className="flex flex-col h-screen w-screen bg-cover bg-top"
+            className="flex flex-col h-screen w-screen bg-cover bg-bottom"
             style={{
                 backgroundImage: "url('/assets/images/bg-2.jpg')"
             }}
         >
-            <div className="absolute inset-0 bg-black/50" />
+            {/* <div className="absolute inset-0 bg-black/50" /> */}
             <div className="flex flex-col justify-between z-50 h-full p-[5%]">
-                <h1 className="text-5xl font-bounce text-white text-center">Tentukan berapa banyak player</h1>
-                <div className="flex flex-col items-center gap-10">
+                <h1 className="text-5xl font-bounce text-white text-center z-50">Tentukan berapa banyak player</h1>
+                <div className="flex flex-col items-center gap-10 z-50">
                     <h1 className="text-5xl font-bounce text-white text-center">Total Player</h1>
                     <div className="flex items-center gap-10">
                         <Button
@@ -79,9 +79,15 @@ export default function Player({ }) {
                         />
                     </div>
                 </div>
-                <div className="flex items-center justify-center gap-10">
+                <div className="flex items-center justify-center gap-10 z-50">
                     <Button title="HOME" onClick={() => router.visit(route('home'))} />
                     <Button title="LANJUT" onClick={onNext} />
+                </div>
+                <div className="absolute bottom-0 -right-[20%] ">
+                    <img
+                        src="/assets/images/bg-diponegoro.png"
+                        className="w-full h-full object-contain"
+                    />
                 </div>
             </div>
         </div>

@@ -12,11 +12,11 @@ export default function Character({ }) {
     const [currentPlayer, setCurrentPlayer] = useState(0)
 
     const charactes = [
-        "/assets/images/character-1.png",
-        "/assets/images/character-2.png",
-        "/assets/images/character-3.png",
-        "/assets/images/character-4.png",
-        "/assets/images/character-5.png",
+        "/assets/images/diponegoro.png",
+        "/assets/images/kyai-mojo.png",
+        "/assets/images/sentot.png",
+        "/assets/images/de-kock.png",
+        "/assets/images/hendrik.png",
     ]
 
     const onSelectCharacter = (value) => {
@@ -56,15 +56,15 @@ export default function Character({ }) {
 
     return (
         <div
-            className="flex flex-col h-screen w-screen bg-cover bg-top"
+            className="flex flex-col h-screen w-screen bg-cover bg-bottom"
             style={{
                 backgroundImage: "url('/assets/images/bg-2.jpg')"
             }}
         >
-            <div className="absolute inset-0 bg-black/50" />
+            {/* <div className="absolute inset-0 bg-black/50" /> */}
             <div className="flex flex-col justify-between z-50 h-full p-[5%]">
-                <h1 className="text-5xl text-white text-center font-bounce">Player {currentPlayer + 1}</h1>
-                <div className="flex flex-col items-center gap-[100px]">
+                <h1 className="text-5xl text-white text-center font-bounce z-50">Player {currentPlayer + 1}</h1>
+                <div className="flex flex-col items-center gap-[100px] z-50">
                     <div className="flex items-center justify-between gap-10">
                         {/* <h1 className="text-4xl font-bounce text-white text-center">Nama</h1> */}
                         <div
@@ -117,7 +117,7 @@ export default function Character({ }) {
                         })}
                     </div>
                 </div>
-                <div className="flex items-center justify-center gap-10">
+                <div className="flex items-center justify-center gap-10 z-50">
                     {currentPlayer > 0 ? (
                         <Button title="KEMBALI" onClick={() => setCurrentPlayer(currentPlayer - 1)}/>
                     ) : (
@@ -147,6 +147,12 @@ export default function Character({ }) {
                             }
                         }
                     }} />
+                </div>
+                <div className="absolute bottom-0 -right-[20%] ">
+                    <img
+                        src="/assets/images/bg-diponegoro.png"
+                        className="w-full h-full object-contain"
+                    />
                 </div>
             </div>
         </div>
