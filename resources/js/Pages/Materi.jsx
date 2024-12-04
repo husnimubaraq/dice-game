@@ -14,6 +14,7 @@ export default function Materi({ }) {
                 backgroundImage: "url('/assets/images/bg-2.jpg')"
             }}
         >
+            <h1 className="text-5xl font-bounce text-white text-center z-50 mb-20">Materi</h1>
             <HTMLFlipBook
                 ref={book}
                 width={850}
