@@ -12,11 +12,11 @@ export default function Character({ }) {
     const [currentPlayer, setCurrentPlayer] = useState(0)
 
     const charactes = [
-        "/assets/images/diponegoro.png",
+        "/assets/images/diponegoro2.png",
         "/assets/images/kyai-mojo.png",
         "/assets/images/sentot.png",
         "/assets/images/de-kock.png",
-        "/assets/images/hendrik.png",
+        "/assets/images/hendrik2.png",
     ]
 
     const onSelectCharacter = (value) => {
