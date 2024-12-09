@@ -2,16 +2,24 @@
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
+import { twMerge } from 'tailwind-merge'
 
-export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { }, onResult }) => {
+export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { }, onResult, onTimeout }) => {
+
+    const [time, setTime] = useState(10);
+    const [isRunning, setIsRunning] = useState(false);
 
     const [question, setQuestion] = useState(null)
+    const [activeColor, setActiveColor] = useState(null)
+    const [activeAnswer, setActiveAnswer] = useState(null)
 
     const init = async () => {
         if(isOpen){
             const { data } = await axios.get(route('question', {
                 number: selectedQuestion.number
             }))
+
+            setIsRunning(true)
 
             setQuestion(data)
         }
@@ -20,6 +28,28 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
     useEffect(() => {
         init()
     }, [isOpen])
+
+    useEffect(() => {
+        let timer;
+
+        if (isRunning && isOpen) {
+          timer = setInterval(() => {
+            setTime((prevTime) => {
+              if (prevTime <= 1) {
+                clearInterval(timer);
+                setIsRunning(false);
+                onTimeout && onTimeout()
+                onCancel && onCancel()
+                return 0;
+              }
+              return prevTime - 1;
+            });
+          }, 1000);
+        }
+
+        // Cleanup the interval on component unmount or when isRunning changes
+        return () => clearInterval(timer);
+      }, [isRunning, isOpen]);
 
     if(!question) return null
 
@@ -31,10 +61,27 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
 
         const { data } = await axios.post(route('question.check'), body)
 
-        onResult && onResult(data)
+        setActiveAnswer(answer)
+
+        if(data.status){
+            setActiveColor('bg-green-500')
+        }else{
+            setActiveColor('bg-red-500')
+        }
+
+        setTimeout(() => {
+            setIsRunning(false)
+            setTime(60)
+            setActiveColor(null)
+            setActiveAnswer(null)
+            onResult && onResult(data)
+        }, 1000)
+
     }
 
     if(!isOpen) return null
+
+    console.log(time)
 
     return (
         <Dialog open={isOpen} as="div" className="relative z-[999] focus:outline-none" onClose={onCancel}>
@@ -61,7 +108,10 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                                     <Fragment key={index}>
                                         <button
                                             onClick={() => onCheck(item)}
-                                            className='py-5 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-sm text-white hover:text-white'
+                                            className={twMerge(
+                                                'py-5 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-sm text-white hover:text-white',
+                                                activeAnswer === item ? `${activeColor} bg-opacity-80` : 'bg-yellow-400'
+                                            )}
                                         >
                                             {item}
                                         </button>

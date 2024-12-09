@@ -28,6 +28,19 @@ export default function Welcome({ }) {
 
     const [players, setPlayers] = useState([])
 
+    const onTimeout = () => {
+        let newData = [...players]
+
+        newData[turn] = {
+            ...newData[turn],
+            prevPoint: newData[turn].currentPoint,
+            currentPoint: POINT * (newData[turn].currentIndex - 1),
+            currentIndex: newData[turn].currentIndex - 1
+        }
+
+        setPlayers(newData)
+    }
+
     const onResult = (value) => {
         setIsOpen(false)
 
@@ -38,14 +51,21 @@ export default function Welcome({ }) {
             const nextIndex = (newData[turn].currentIndex + value.step)
 
             if (newData[turn].currentIndex === dataCross.length) {
+                const point = value.point
+
                 newScores[turn] = {
                     ...newScores[turn],
-                    score: newScores[turn].score + 100
+                    score: newScores[turn].score + point
                 }
+
+                const dataLogs = [
+                    `${newData[turn].name} mendapatkan ${point} nilai`
+                    `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+                ]
 
                 const dataLog = [
                     ...logs,
-                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
+                    ...dataLogs
                 ]
 
                 setLogs(dataLog)
@@ -85,14 +105,21 @@ export default function Welcome({ }) {
             } else if (nextIndex > dataCross.length) {
                 const diff = Math.abs(nextIndex - dataCross.length)
 
+                const point = value.point
+
                 newScores[turn] = {
                     ...newScores[turn],
-                    score: newScores[turn].score + value.point
+                    score: newScores[turn].score + point
                 }
+
+                const dataLogs = [
+                    `${newData[turn].name} mendapatkan ${point} nilai`
+                    `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+                ]
 
                 setLogs([
                     ...logs,
-                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
+                    ...dataLogs
                 ])
 
                 newData[turn] = {
@@ -102,14 +129,21 @@ export default function Welcome({ }) {
                     currentIndex: newData[turn].currentIndex + diff
                 }
             } else {
+                const point = value.point
+
                 newScores[turn] = {
                     ...newScores[turn],
-                    score: newScores[turn].score + value.point
+                    score: newScores[turn].score + point
                 }
+
+                const dataLogs = [
+                    `${newData[turn].name} mendapatkan ${point} nilai`,
+                    `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+                ]
 
                 setLogs([
                     ...logs,
-                    `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
+                    ...dataLogs
                 ])
 
                 newData[turn] = {
@@ -124,16 +158,23 @@ export default function Welcome({ }) {
             setPlayers(newData)
 
         } else {
-            const score = newScores[turn].score < 0 ? 0 : newScores[turn].score - value.point
+            const point = value.point
+
+            const score = newScores[turn].score < 0 ? 0 : newScores[turn].score - point
 
             newScores[turn] = {
                 ...newScores[turn],
                 score: score
             }
 
+            const dataLogs = [
+                `${newData[turn].name} berkurang ${point} nilai`,
+                `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+            ]
+
             setLogs([
                 ...logs,
-                `Player ${newData[turn].name} nilai berkurang : ${(score)}`
+                ...dataLogs
             ])
 
             setScores(newScores)
@@ -230,17 +271,17 @@ export default function Welcome({ }) {
 
                 if (cross.type === "previous") {
                     setTimeout(() => {
-                        newScores[turn] = {
-                            ...newScores[turn],
-                            score: newScores[turn].score - 3
-                        }
+                        // newScores[turn] = {
+                        //     ...newScores[turn],
+                        //     score: newScores[turn].score - 3
+                        // }
 
-                        setLogs([
-                            ...logs,
-                            `Player ${newData[turn].name} nilai berkurang : ${(newScores[turn].score)}`
-                        ])
+                        // setLogs([
+                        //     ...logs,
+                        //     `Player ${newData[turn].name} nilai berkurang : ${(newScores[turn].score)}`
+                        // ])
 
-                        setScores(newScores)
+                        // setScores(newScores)
 
                         newData[turn] = {
                             ...newData[turn],
@@ -253,17 +294,17 @@ export default function Welcome({ }) {
                     }, 3000)
                 } else if (cross.type === "next") {
                     setTimeout(() => {
-                        newScores[turn] = {
-                            ...newScores[turn],
-                            score: newScores[turn].score + 3
-                        }
+                        // newScores[turn] = {
+                        //     ...newScores[turn],
+                        //     score: newScores[turn].score + 3
+                        // }
 
-                        setLogs([
-                            ...logs,
-                            `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
-                        ])
+                        // setLogs([
+                        //     ...logs,
+                        //     `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
+                        // ])
 
-                        setScores(newScores)
+                        // setScores(newScores)
 
                         newData[turn] = {
                             ...newData[turn],
@@ -370,7 +411,7 @@ export default function Welcome({ }) {
                     )}
                     <div className='absolute -top-[20%] right-0'>
                         <Dice
-                            // cheatValue={3}
+                            cheatValue={5}
                             onRoll={(value) => {
                                 let newData = [...players]
 
@@ -378,7 +419,6 @@ export default function Welcome({ }) {
 
                                 if (nextIndex > dataCross.length) {
                                     const diff = Math.abs(nextIndex - (dataCross.length - 1))
-
 
                                     newData[turn] = {
                                         ...newData[turn],
@@ -408,6 +448,7 @@ export default function Welcome({ }) {
                     onCancel={() => setIsOpen(false)}
                     onResult={onResult}
                     data={dataCross.find((_, i) => i === players[turn].currentIndex - 1)}
+                    onTimeout={onTimeout}
                 />
             )}
 

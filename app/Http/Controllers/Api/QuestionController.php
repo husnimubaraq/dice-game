@@ -216,10 +216,17 @@ class QuestionController extends Controller
                 'point' => $filteredItems["point"],
             ]);
         }else{
+            $filteredItems = collect($data)->first(function ($item) use ($searchAnswer) {
+                $nested = collect($item['incorrect_answers'])->first(function($item2) use ($searchAnswer) {
+                    return $item2 === $searchAnswer;
+                });
+                return $nested ? true : false;
+            });
+
             return response()->json([
                 'status' => false,
                 'step' => 2,
-                'point' => 1,
+                'point' => $filteredItems["point"],
             ]);
         }
     }
