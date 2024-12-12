@@ -1,11 +1,11 @@
 import { Head } from '@inertiajs/react';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import Dice from "react-dice-roll";
 import { CrossPath } from './CrossPath';
-import { dataCross } from './Data';
+import { dataCross, dataHistories } from './Data';
 import { Question } from './Question';
 
 gsap.registerPlugin(MotionPathPlugin);
@@ -25,6 +25,7 @@ export default function Welcome({ }) {
     const [logs, setLogs] = useState([])
 
     const [scores, setScores] = useState([])
+    const [historyQuestion, setHistoryQuestion] = useState([])
 
     const [players, setPlayers] = useState([])
 
@@ -42,12 +43,27 @@ export default function Welcome({ }) {
     }
 
     const onResult = (value) => {
+
         setIsOpen(false)
 
         let newData = [...players]
         let newScores = [...scores]
+        let newHistoryQuestions = [...historyQuestion]
 
         if (value.status) {
+            const dataHistoryQuestion = [
+                ...newHistoryQuestions,
+                {
+                    ...value.question,
+                    player: {
+                        id: newData[turn].id,
+                        name: newData[turn].name,
+                    }
+                }
+            ]
+
+            setHistoryQuestion(dataHistoryQuestion)
+
             const nextIndex = (newData[turn].currentIndex + value.step)
 
             if (newData[turn].currentIndex === dataCross.length) {
@@ -59,8 +75,8 @@ export default function Welcome({ }) {
                 }
 
                 const dataLogs = [
-                    `${newData[turn].name} mendapatkan ${point} nilai`
-                    `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+                    `${newData[turn].name} mendapatkan ${point} score`,
+                    `${newData[turn].name} total score : ${(newScores[turn].score)}`
                 ]
 
                 const dataLog = [
@@ -70,33 +86,53 @@ export default function Welcome({ }) {
 
                 setLogs(dataLog)
 
+                const newDatas = dataHistoryQuestion.filter(x => x.player.id === newData[turn].id)
+                const countFirst = newDatas.filter(x => x.no <= 5)
+                const countSecond = newDatas.filter(x => x.no >= 6 && x.no <= 10)
+                const countThird = newDatas.filter(x => x.no >= 11 && x.no <= 15)
+
+                const finalScore = [
+                    countFirst.length > 0 ? countFirst[0].point * countFirst.length : 0,
+                    countSecond.length > 0 ? countSecond[0].point * countSecond.length : 0,
+                    countThird.length > 0 ? countThird[0].point * countThird.length : 0,
+                ].reduce((a, b) => a + b)
+
+                newScores[turn] = {
+                    ...newScores[turn],
+                    score: finalScore
+                }
+
                 setScores(newScores)
+
                 const dataFinal = {
                     player: newData[turn],
-                    score: newScores[turn]
+                    score: newScores[turn],
                 }
+
                 setWinner(dataFinal)
 
                 let dataHistories = localStorage.getItem('histories')
 
-                if(dataHistories){
+                if (dataHistories) {
                     dataHistories = JSON.parse(dataHistories)
                     dataHistories.push({
                         winner: dataFinal,
                         logs: dataLog,
                         data: newScores,
                         id: new Date().getTime(),
-                        date: dayjs().format("DD MMMM YYYY h:mm")
+                        date: dayjs().format("DD MMMM YYYY h:mm"),
+                        history_questions: dataHistoryQuestion
                     })
                     localStorage.setItem('histories', JSON.stringify(dataHistories))
-                }else{
+                } else {
                     localStorage.setItem('histories', JSON.stringify([
                         {
                             winner: dataFinal,
                             logs: dataLog,
                             data: newScores,
                             id: new Date().getTime(),
-                            date: dayjs().format("DD MMMM YYYY h:mm")
+                            date: dayjs().format("DD MMMM YYYY h:mm"),
+                            history_questions: dataHistoryQuestion
                         }
                     ]))
                 }
@@ -113,8 +149,8 @@ export default function Welcome({ }) {
                 }
 
                 const dataLogs = [
-                    `${newData[turn].name} mendapatkan ${point} nilai`
-                    `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+                    `${newData[turn].name} mendapatkan ${point} score`,
+                    `${newData[turn].name} total score : ${(newScores[turn].score)}`
                 ]
 
                 setLogs([
@@ -137,8 +173,8 @@ export default function Welcome({ }) {
                 }
 
                 const dataLogs = [
-                    `${newData[turn].name} mendapatkan ${point} nilai`,
-                    `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+                    `${newData[turn].name} mendapatkan ${point} score`,
+                    `${newData[turn].name} total score : ${(newScores[turn].score)}`
                 ]
 
                 setLogs([
@@ -168,8 +204,8 @@ export default function Welcome({ }) {
             }
 
             const dataLogs = [
-                `${newData[turn].name} berkurang ${point} nilai`,
-                `${newData[turn].name} total nilai : ${(newScores[turn].score)}`
+                `${newData[turn].name} berkurang ${point} score`,
+                `${newData[turn].name} total score : ${(newScores[turn].score)}`
             ]
 
             setLogs([
@@ -271,18 +307,6 @@ export default function Welcome({ }) {
 
                 if (cross.type === "previous") {
                     setTimeout(() => {
-                        // newScores[turn] = {
-                        //     ...newScores[turn],
-                        //     score: newScores[turn].score - 3
-                        // }
-
-                        // setLogs([
-                        //     ...logs,
-                        //     `Player ${newData[turn].name} nilai berkurang : ${(newScores[turn].score)}`
-                        // ])
-
-                        // setScores(newScores)
-
                         newData[turn] = {
                             ...newData[turn],
                             prevPoint: newData[turn].currentPoint,
@@ -294,18 +318,6 @@ export default function Welcome({ }) {
                     }, 3000)
                 } else if (cross.type === "next") {
                     setTimeout(() => {
-                        // newScores[turn] = {
-                        //     ...newScores[turn],
-                        //     score: newScores[turn].score + 3
-                        // }
-
-                        // setLogs([
-                        //     ...logs,
-                        //     `Player ${newData[turn].name} nilai bertambah : ${(newScores[turn].score)}`
-                        // ])
-
-                        // setScores(newScores)
-
                         newData[turn] = {
                             ...newData[turn],
                             prevPoint: newData[turn].currentPoint,
@@ -411,7 +423,7 @@ export default function Welcome({ }) {
                     )}
                     <div className='absolute -top-[20%] right-0'>
                         <Dice
-                            cheatValue={5}
+                            // cheatValue={5}
                             onRoll={(value) => {
                                 let newData = [...players]
 

@@ -147,3 +147,126 @@ export const dataCross = [
         number: 15
     },
 ]
+
+export const dataHistories = [
+    {
+        "no": 1,
+        "point": 4,
+        "player": {
+            "id": 2,
+            "name": "Mubarak"
+        }
+    },
+    {
+        "no": 3,
+        "point": 4,
+        "player": {
+            "id": 2,
+            "name": "Mubarak"
+        }
+    },
+    {
+        "no": 4,
+        "point": 4,
+        "player": {
+            "id": 0,
+            "name": "Husni"
+        }
+    },
+    {
+        "no": 6,
+        "point": 7,
+        "player": {
+            "id": 0,
+            "name": "Husni"
+        }
+    },
+    {
+        "no": 6,
+        "point": 7,
+        "player": {
+            "id": 1,
+            "name": "Ailatat"
+        }
+    },
+    {
+        "no": 4,
+        "point": 4,
+        "player": {
+            "id": 2,
+            "name": "Mubarak"
+        }
+    },
+    {
+        "no": 6,
+        "point": 7,
+        "player": {
+            "id": 2,
+            "name": "Mubarak"
+        }
+    },
+    {
+        "no": 7,
+        "point": 7,
+        "player": {
+            "id": 0,
+            "name": "Husni"
+        }
+    },
+    {
+        "no": 9,
+        "point": 7,
+        "player": {
+            "id": 1,
+            "name": "Ailatat"
+        }
+    },
+    {
+        "no": 10,
+        "point": 7,
+        "player": {
+            "id": 1,
+            "name": "Ailatat"
+        }
+    },
+    {
+        "no": 10,
+        "point": 7,
+        "player": {
+            "id": 0,
+            "name": "Husni"
+        }
+    },
+    {
+        "no": 12,
+        "point": 9,
+        "player": {
+            "id": 1,
+            "name": "Ailatat"
+        }
+    },
+    {
+        "no": 13,
+        "point": 9,
+        "player": {
+            "id": 1,
+            "name": "Ailatat"
+        }
+    },
+    {
+        "no": 11,
+        "point": 9,
+        "player": {
+            "id": 2,
+            "name": "Mubarak"
+        }
+    },
+    {
+        "no": 15,
+        "point": 9,
+        "player": {
+            "id": 1,
+            "name": "Ailatat"
+        }
+    }
+]

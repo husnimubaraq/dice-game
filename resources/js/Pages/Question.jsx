@@ -6,7 +6,7 @@ import { twMerge } from 'tailwind-merge'
 
 export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { }, onResult, onTimeout }) => {
 
-    const [time, setTime] = useState(10);
+    const [time, setTime] = useState(75);
     const [isRunning, setIsRunning] = useState(false);
 
     const [question, setQuestion] = useState(null)
@@ -40,6 +40,7 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                 setIsRunning(false);
                 onTimeout && onTimeout()
                 onCancel && onCancel()
+                setTime(75)
                 return 0;
               }
               return prevTime - 1;
@@ -71,7 +72,7 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
 
         setTimeout(() => {
             setIsRunning(false)
-            setTime(60)
+            setTime(75)
             setActiveColor(null)
             setActiveAnswer(null)
             onResult && onResult(data)
@@ -80,8 +81,6 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
     }
 
     if(!isOpen) return null
-
-    console.log(time)
 
     return (
         <Dialog open={isOpen} as="div" className="relative z-[999] focus:outline-none" onClose={onCancel}>
@@ -100,9 +99,14 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                             />
                         </div>
                         <div className='relative flex flex-col p-[30px] bg-black/30  rounded-[50px]'>
-                            <p className="mt-2 text-2xl text-white text-center">
-                                {question.question}
-                            </p>
+                            <div className='flex items-center gap-5'>
+                                <p className="mt-2 text-2xl text-white flex-1">
+                                    {question.question}
+                                </p>
+                                <div className='h-20 w-20 rounded-full flex flex-col items-center justify-center bg-yellow-500'>
+                                    <span className='text-3xl font-bounce text-white'>{time}</span>
+                                </div>
+                            </div>
                             <div className='flex flex-col gap-7 mt-10'>
                                 {question.answers.map((item, index) => (
                                     <Fragment key={index}>
