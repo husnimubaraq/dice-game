@@ -19,7 +19,7 @@ Route::get('/riwayat', [HomeController::class, 'riwayat'])->name('riwayat');
 Route::get('/leaderboard', [HomeController::class, 'leaderboard'])->name('leaderboard');
 
 Route::get('/play', function () {
-    return Inertia::render('Welcome');
+    return Inertia::render('Play');
 })->name('play');
 
 Route::get('/dashboard', function () {

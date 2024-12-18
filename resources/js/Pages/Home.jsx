@@ -2,7 +2,6 @@ import { router } from "@inertiajs/react";
 import { Button } from "./Components/Button";
 
 export default function Home({ }) {
-
     return (
         <div
             className="flex flex-col h-screen w-screen bg-cover bg-bottom"
@@ -10,7 +9,6 @@ export default function Home({ }) {
                 backgroundImage: "url('/assets/images/bg-2.jpg')"
             }}
         >
-            {/* <div className="absolute inset-0 bg-black/50" /> */}
             <div className="flex flex-col justify-between z-50 h-full p-[5%]">
                 <h1 className="text-5xl font-bounce text-white text-center z-50">QUIZ SEJARAH DIPONEGORO</h1>
                 <div className="flex flex-col items-center z-50">
