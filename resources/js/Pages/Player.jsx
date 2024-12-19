@@ -10,11 +10,6 @@ export default function Player({ }) {
             name: "",
             image: ""
         },
-        {
-            id: 1,
-            name: "",
-            image: ""
-        },
     ])
 
     const onSelectTotal = (number) => {

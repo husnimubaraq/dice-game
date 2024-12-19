@@ -42,4 +42,9 @@ class HomeController extends Controller
     {
         return Inertia::render('Leaderboard');
     }
+
+    public function info(Request $request)
+    {
+        return Inertia::render('Info');
+    }
 }

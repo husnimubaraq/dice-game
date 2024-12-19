@@ -3,16 +3,6 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Arista";
-    src: url("fonts/Arista20AlternateRegular-jy89.ttf");
-}
-
-@font-face {
-    font-family: "Bubble";
-    src: url("fonts/BubbleboddyExtralight-z54X.ttf");
-}
-
-@font-face {
     font-family: "Bounce";
-    src: url("fonts/SheriffBounce-qZwGq.ttf");
+    src: url("/fonts/SheriffBounce-qZwGq.ttf");
 }

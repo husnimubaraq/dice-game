@@ -17,6 +17,7 @@ Route::get('/character', [HomeController::class, 'character'])->name('character'
 Route::get('/materi', [HomeController::class, 'materi'])->name('materi');
 Route::get('/riwayat', [HomeController::class, 'riwayat'])->name('riwayat');
 Route::get('/leaderboard', [HomeController::class, 'leaderboard'])->name('leaderboard');
+Route::get('/info', [HomeController::class, 'info'])->name('info');
 
 Route::get('/play', function () {
     return Inertia::render('Play');

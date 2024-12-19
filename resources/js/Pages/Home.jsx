@@ -21,6 +21,7 @@ export default function Home({ }) {
                 </div>
                 <div className="flex items-center justify-center gap-10 z-50">
                     <Button title="MATERI" onClick={() => router.visit(route('materi'))}/>
+                    <Button title="INFO" onClick={() => router.visit(route('info'))}/>
                     <Button title="RIWAYAT PERMAINAN" onClick={() => router.visit(route('riwayat'))}/>
                     <Button title="PAPAN PERINGKAT" onClick={() => router.visit(route('leaderboard'))}/>
                 </div>

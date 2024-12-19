@@ -11,13 +11,8 @@ export default {
     ],
 
     theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-                arista: ['Arista', ...defaultTheme.fontFamily.sans],
-                bubble: ['Bubble', ...defaultTheme.fontFamily.sans],
-                bounce: ['Bounce', ...defaultTheme.fontFamily.sans],
-            },
+        fontFamily: {
+            bounce: ['Bounce', ...defaultTheme.fontFamily.sans],
         },
     },
 
