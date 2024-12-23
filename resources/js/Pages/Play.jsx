@@ -348,7 +348,7 @@ export default function Welcome({ }) {
     return (
         <>
             <Head title="Welcome" />
-            <main className='flex flex-col h-screen w-screen relative overflow-hidden'>
+            <main className='flex flex-col h-screen w-screen relative overflow-hidden' id="map">
                 <img
                     src='/assets/images/bg-4.png'
                     className='w-full h-full object-contain'
@@ -445,6 +445,30 @@ export default function Welcome({ }) {
                                         currentPoint: POINT * nextIndex,
                                         currentIndex: newData[turn].currentIndex + value
                                     }
+
+                                    const tl = gsap.timeline()
+
+                                    tl.fromTo('#map', {
+                                        scale: 1
+                                    }, {
+                                        scale: 2,
+                                        duration: 2
+                                    }, "+=1")
+                                    .to('#map', {
+                                        x: newData[turn],
+                                        y: POINT * nextIndex,
+                                    },  1)
+
+                                    // tl.fromTo('#map',
+                                    //     {
+                                    //         scale: 1
+                                    //     },
+                                    //     {
+                                    //         scale: 2,
+                                    //         duration: 2
+                                    //     },
+                                    //     0
+                                    // )
                                 }
                                 setPlayers(newData)
                             }}
