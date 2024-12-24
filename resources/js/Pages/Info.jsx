@@ -52,10 +52,22 @@ export default function Info({ }) {
                     <ul className="list-disc text-xl/10 mt-5">
                         <ul>•	Panah Biru: Menunjukkan pemain maju.</ul>
                         <ul>•	Panah Merah: Menunjukkan pemain mundur.</ul>
+                        <ul>•	Tanda Kuning: Menunjukkan pemain tetap di posisi.</ul>
                         <ul>•	Tanda Tanya: Menandakan munculnya soal.</ul>
                         <ul>•	Jawaban Berwarna Hijau: Pemain akan maju dan mendapat kesempatan memutar dadu.</ul>
                         <ul>•	Jawaban Berwarna Merah: Pemain harus mundur dan tidak dapat memutar dadu.</ul>
                         <ul>•	Waktu Menjawab: Jika pemain tidak menjawab pertanyaan dalam waktu 75 detik, maka permain tidak diberi kesempatan memutar dadu.</ul>
+                    </ul>
+                </div>
+                <div className="bg-[#f2b480] p-5 flex flex-col rounded-l-3xl">
+                    <p className="text-3xl font-bold mt-5 mb-2 text-center">Cara Bermain</p>
+                    <ul className="list-disc text-xl/10 mt-5">
+                        <ul>•	Pada halaman utama tekan tombol Play untuk memulai game nya.</ul>
+                        <ul>•	Pilih berapa banyak player.</ul>
+                        <ul>•	Masukan nama dan pilih karakter player.</ul>
+                        <ul>•	Klik dadu maka karakter akan perpindah sesuai angka.</ul>
+                        <ul>•	Jika posisi player di tanda tanya maka akan muncul pertanyaan.</ul>
+                        <ul>•	Selesaikan permainan sampai pertanyaan terakhir.</ul>
                     </ul>
                 </div>
             </HTMLFlipBook>

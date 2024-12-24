@@ -13,14 +13,49 @@ gsap.registerPlugin(MotionPathPlugin);
 import "./index.css"
 import { Winner } from './Winner';
 import dayjs from 'dayjs';
+import axios from 'axios';
 
 const POINT = 0.03
+
+const zoomPlayer = (playerId) => {
+    const box = document.getElementById(`div-${playerId}`);
+    const map = document.getElementById("map");
+
+    const boxRect = box.getBoundingClientRect();
+    const mapRect = map.getBoundingClientRect();
+
+    const offsetX = boxRect.left - mapRect.left;
+    const offsetY = boxRect.top - mapRect.top;
+
+    const scale = 1.5;
+
+    gsap.to(map, {
+        duration: 3,
+        scale: scale,
+        x: -offsetX * scale + mapRect.width / 2 - (boxRect.width / 2) * scale,
+        y: -offsetY * scale + mapRect.height / 2 - (boxRect.height / 2) * scale,
+        transformOrigin: "top left",
+        ease: "power2.out",
+        onComplete: () => {
+            gsap.to(map, {
+                duration: 1,
+                scale: 1,
+                x: 0,
+                y: 0,
+                transformOrigin: "top left",
+                ease: "power2.out",
+            });
+
+        }
+    });
+}
 
 export default function Welcome({ }) {
 
     const [turn, setTurn] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
     const [isOpenWinner, setIsOpenWinner] = useState(false)
+    const [isInit, setIsInit] = useState(true)
     const [winner, setWinner] = useState(null)
     const [logs, setLogs] = useState([])
 
@@ -39,10 +74,12 @@ export default function Welcome({ }) {
             currentIndex: newData[turn].currentIndex - 1
         }
 
+        zoomPlayer(newData[turn].id)
+
         setPlayers(newData)
     }
 
-    const onResult = (value) => {
+    const onResult = async (value) => {
 
         setIsOpen(false)
 
@@ -111,31 +148,37 @@ export default function Welcome({ }) {
 
                 setWinner(dataFinal)
 
-                let dataHistories = localStorage.getItem('histories')
+                const { data } = await axios.post(route('histories.store'), {
+                    data: newScores
+                });
 
-                if (dataHistories) {
-                    dataHistories = JSON.parse(dataHistories)
-                    dataHistories.push({
-                        winner: dataFinal,
-                        logs: dataLog,
-                        data: newScores,
-                        id: new Date().getTime(),
-                        date: dayjs().format("DD MMMM YYYY h:mm"),
-                        history_questions: dataHistoryQuestion
-                    })
-                    localStorage.setItem('histories', JSON.stringify(dataHistories))
-                } else {
-                    localStorage.setItem('histories', JSON.stringify([
-                        {
-                            winner: dataFinal,
-                            logs: dataLog,
-                            data: newScores,
-                            id: new Date().getTime(),
-                            date: dayjs().format("DD MMMM YYYY h:mm"),
-                            history_questions: dataHistoryQuestion
-                        }
-                    ]))
-                }
+                console.log('data: ', data)
+
+                // let dataHistories = localStorage.getItem('histories')
+
+                // if (dataHistories) {
+                //     dataHistories = JSON.parse(dataHistories)
+                //     dataHistories.push({
+                //         winner: dataFinal,
+                //         logs: dataLog,
+                //         data: newScores,
+                //         id: new Date().getTime(),
+                //         date: dayjs().format("DD MMMM YYYY h:mm"),
+                //         history_questions: dataHistoryQuestion
+                //     })
+                //     localStorage.setItem('histories', JSON.stringify(dataHistories))
+                // } else {
+                //     localStorage.setItem('histories', JSON.stringify([
+                //         {
+                //             winner: dataFinal,
+                //             logs: dataLog,
+                //             data: newScores,
+                //             id: new Date().getTime(),
+                //             date: dayjs().format("DD MMMM YYYY h:mm"),
+                //             history_questions: dataHistoryQuestion
+                //         }
+                //     ]))
+                // }
                 setIsOpenWinner(true)
                 return
             } else if (nextIndex > dataCross.length) {
@@ -164,6 +207,8 @@ export default function Welcome({ }) {
                     currentPoint: POINT * (newData[turn].currentIndex + diff),
                     currentIndex: newData[turn].currentIndex + diff
                 }
+
+                zoomPlayer(newData[turn].id)
             } else {
                 const point = value.point
 
@@ -188,6 +233,8 @@ export default function Welcome({ }) {
                     currentPoint: POINT * nextIndex,
                     currentIndex: nextIndex
                 }
+
+                zoomPlayer(newData[turn].id)
             }
 
             setScores(newScores)
@@ -224,6 +271,8 @@ export default function Welcome({ }) {
                 currentIndex: newData[turn].currentIndex - value.step
             }
 
+            zoomPlayer(newData[turn].id)
+
             setPlayers(newData)
 
             if (current < 1) {
@@ -258,6 +307,8 @@ export default function Welcome({ }) {
         }
     }, [])
 
+    console.log(players)
+
     useEffect(() => {
         for (let i = 0; i < dataCross.length; i++) {
             gsap.to(`#div-cross-${i}`, {
@@ -279,7 +330,7 @@ export default function Welcome({ }) {
     useEffect(() => {
         const player = players.find(x => x.id === turn)
 
-        if (player) {
+        if (player && !isInit) {
             gsap.to(`#div-${player.id}`, {
                 motionPath: {
                     path: "#path",
@@ -293,8 +344,24 @@ export default function Welcome({ }) {
                 duration: 3,
                 ease: "power1.inOut",
             });
+        } else{
+            for(let item of players){
+                gsap.to(`#div-${item.id}`, {
+                    motionPath: {
+                        path: "#path",
+                        align: "#path",
+                        alignOrigin: [0.5, 0.5],
+                        autoRotate: false,
+                        start: item.prevPoint,
+                        end: item.currentPoint,
+                    },
+                    transformOrigin: "50% 50%",
+                    duration: 3,
+                    ease: "power1.inOut",
+                });
+            }
         }
-    }, [players])
+    }, [players, isInit])
 
     useEffect(() => {
         if (players.length > 0) {
@@ -348,7 +415,7 @@ export default function Welcome({ }) {
     return (
         <>
             <Head title="Welcome" />
-            <main className='flex flex-col h-screen w-screen relative overflow-hidden'>
+            <main className='flex flex-col h-screen w-screen relative overflow-hidden' id="map">
                 <img
                     src='/assets/images/bg-4.png'
                     className='w-full h-full object-contain'
@@ -427,6 +494,8 @@ export default function Welcome({ }) {
                             onRoll={(value) => {
                                 let newData = [...players]
 
+                                setIsInit(false)
+
                                 const nextIndex = (newData[turn].currentIndex + value)
 
                                 if (nextIndex > dataCross.length) {
@@ -438,6 +507,7 @@ export default function Welcome({ }) {
                                         currentPoint: POINT * (newData[turn].currentIndex + diff),
                                         currentIndex: newData[turn].currentIndex + diff
                                     }
+                                    zoomPlayer(newData[turn].id)
                                 } else {
                                     newData[turn] = {
                                         ...newData[turn],
@@ -445,6 +515,7 @@ export default function Welcome({ }) {
                                         currentPoint: POINT * nextIndex,
                                         currentIndex: newData[turn].currentIndex + value
                                     }
+                                    zoomPlayer(newData[turn].id)
                                 }
                                 setPlayers(newData)
                             }}

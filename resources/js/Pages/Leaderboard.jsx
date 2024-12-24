@@ -4,42 +4,62 @@ import { twMerge } from "tailwind-merge"
 import { Button } from "./Components/Button"
 import useDeepCompareEffect from "use-deep-compare-effect"
 
+function getHighestScores(data) {
+    // Group data by history_id
+    const grouped = data.reduce((acc, item) => {
+        if (!acc[item.history_id]) {
+            acc[item.history_id] = [];
+        }
+        acc[item.history_id].push(item);
+        return acc;
+    }, {});
+
+    // Find the highest score for each group
+    const result = Object.values(grouped).map(group => {
+        return group.reduce((max, item) => (item.score > max.score ? item : max), group[0]);
+    });
+
+    return result;
+}
+
+
 export default function Leaderboard({ }) {
 
     const [data, setData] = useState([])
     const [topPlayer, setTopPlayer] = useState([])
 
-    useDeepCompareEffect(() => {
-        let dataHistories = localStorage.getItem('histories')
+    const init = async () => {
 
-        if (dataHistories) {
-            dataHistories = JSON.parse(dataHistories)
+        if (route().params?.id) {
+            const { data: history } = await axios.get(route('histories.detail', {
+                id: route().params.id
+            }))
 
-            if (route().params?.id) {
-                const history = dataHistories.find(x => x.id === Number(route().params.id))
+            if (history) {
+                setData(history.leaderboards)
 
-                if (history) {
-                    setData(history.data)
-
-                    let sortedData = history.data.sort((a, b) => b.score - a.score);
-                    let newData = sortedData.slice(0, 3)
+                let sortedData = history.leaderboards.sort((a, b) => b.score - a.score);
+                let newData = sortedData.slice(0, 3)
+                if(newData.length === 1){
+                    setTopPlayer(newData)
+                }else{
                     const swipedData = [newData[1], newData[0], ...newData.slice(2)];
                     setTopPlayer(swipedData)
                 }
-            }else{
-                const histories = dataHistories.map(x => ({
-                    ...x.winner.score,
-                    image: x.winner.player.image
-                }))
-
-                setData(histories)
-
-                let sortedData = histories.sort((a, b) => b.score - a.score);
-                let newData = sortedData.slice(0, 3)
-                const swipedData = [newData[0], ...newData.slice(2)];
-                setTopPlayer(swipedData)
             }
+        }else{
+
+            const { data: histories } = await axios.get(route('leaderboards'))
+
+            const newData = getHighestScores(histories);
+
+            const swipedData = [newData[1], newData[0], ...newData.slice(2)];
+            setTopPlayer(swipedData)
         }
+    } 
+
+    useDeepCompareEffect(() => {
+        init()
     }, [route().params])
 
     return (

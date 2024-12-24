@@ -5,7 +5,8 @@ use App\Http\Controllers\{
     ProfileController
 };
 use App\Http\Controllers\Api\{
-    QuestionController
+    QuestionController,
+    HistoryController
 };
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -35,5 +36,10 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/question', [QuestionController::class, 'index'])->name('question');
 Route::post('/question/check', [QuestionController::class, 'checkAnswer'])->name('question.check');
+
+Route::get('/histories', [HistoryController::class, 'index'])->name('histories');
+Route::get('/histories/{id}', [HistoryController::class, 'detail'])->name('histories.detail');
+Route::post('/histories', [HistoryController::class, 'store'])->name('histories.store');
+Route::get('/leaderboards', [HistoryController::class, 'leaderboard'])->name('leaderboards');
 
 require __DIR__.'/auth.php';
