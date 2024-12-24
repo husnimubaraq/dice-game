@@ -1,7 +1,16 @@
 import { router } from "@inertiajs/react";
 import { Button } from "./Components/Button";
+import useSound from "use-sound";
+import { useEffect } from "react";
 
 export default function Home({ }) {
+
+    const [play, exposedData] = useSound('/assets/sounds/background.mp3')
+
+    useEffect(() => {
+        play()
+    }, [play])
+
     return (
         <div
             className="flex flex-col h-screen w-screen bg-cover bg-bottom"

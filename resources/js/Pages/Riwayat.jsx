@@ -2,19 +2,31 @@ import { Fragment, useEffect, useState } from "react"
 import "./riwayat.css"
 import { router } from "@inertiajs/react"
 import { Button } from "./Components/Button"
+import axios from "axios"
+import dayjs from "dayjs"
 
 export default function Riwayat({ }) {
 
     const [data, setData] = useState([])
 
-    useEffect(() => {
-        let dataHistories = localStorage.getItem('histories')
+    const init = async () => {
+        const { data } = await axios.get(route('histories'))
 
-        if(dataHistories){
-            dataHistories = JSON.parse(dataHistories)
-            setData(dataHistories)
-        }
+        setData(data)
+    }
+
+    useEffect(() => {
+        init()
     }, [])
+
+    // useEffect(() => {
+    //     let dataHistories = localStorage.getItem('histories')
+
+    //     if(dataHistories){
+    //         dataHistories = JSON.parse(dataHistories)
+    //         setData(dataHistories)
+    //     }
+    // }, [])
 
     return (
         <div
@@ -38,8 +50,8 @@ export default function Riwayat({ }) {
                         <Fragment key={index}>
                             <tr class="bg-blue-200 lg:text-black">
                                 <td class="p-3 capitalize text-center">{index + 1}</td>
-                                <td class="p-3 font-medium capitalize w-[400px]">{item.date}</td>
-                                <td class="p-3 text-center">{item.data.length}</td>
+                                <td class="p-3 font-medium capitalize w-[400px]">{dayjs(item.created_at).format('DD MMMM YYYY, hh:mm')}</td>
+                                <td class="p-3 text-center">{item.leaderboards.length}</td>
                                 <td class="p-3 pb-5 w-[300px]">
                                     <div className="flex flex-col items-center">
                                         <Button title="Lihat" className="w-[100px]" onClick={() => router.visit(route('leaderboard', {

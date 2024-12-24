@@ -47,7 +47,7 @@ export default function Player({ }) {
                             className="w-[70px] h-[70px] !rounded-full"
                             textClassName="text-3xl"
                             title="1"
-                            onClick={() => onSelectTotal(2)}
+                            onClick={() => onSelectTotal(1)}
                             active={players.length === 1}
                         />
                         <Button
