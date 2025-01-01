@@ -152,33 +152,6 @@ export default function Welcome({ }) {
                     data: newScores
                 });
 
-                console.log('data: ', data)
-
-                // let dataHistories = localStorage.getItem('histories')
-
-                // if (dataHistories) {
-                //     dataHistories = JSON.parse(dataHistories)
-                //     dataHistories.push({
-                //         winner: dataFinal,
-                //         logs: dataLog,
-                //         data: newScores,
-                //         id: new Date().getTime(),
-                //         date: dayjs().format("DD MMMM YYYY h:mm"),
-                //         history_questions: dataHistoryQuestion
-                //     })
-                //     localStorage.setItem('histories', JSON.stringify(dataHistories))
-                // } else {
-                //     localStorage.setItem('histories', JSON.stringify([
-                //         {
-                //             winner: dataFinal,
-                //             logs: dataLog,
-                //             data: newScores,
-                //             id: new Date().getTime(),
-                //             date: dayjs().format("DD MMMM YYYY h:mm"),
-                //             history_questions: dataHistoryQuestion
-                //         }
-                //     ]))
-                // }
                 setIsOpenWinner(true)
                 return
             } else if (nextIndex > dataCross.length) {
@@ -264,11 +237,20 @@ export default function Welcome({ }) {
 
             const current = (newData[turn].currentIndex - value.step)
 
-            newData[turn] = {
-                ...newData[turn],
-                prevPoint: newData[turn].currentPoint,
-                currentPoint: POINT * (newData[turn].currentIndex - value.step),
-                currentIndex: newData[turn].currentIndex - value.step
+            if(current < 1){
+                newData[turn] = {
+                    ...newData[turn],
+                    prevPoint: newData[turn].currentPoint,
+                    currentPoint: 0,
+                    currentIndex: newData[turn].currentIndex - value.step
+                }
+            }else{
+                newData[turn] = {
+                    ...newData[turn],
+                    prevPoint: newData[turn].currentPoint,
+                    currentPoint: POINT * (newData[turn].currentIndex - value.step),
+                    currentIndex: newData[turn].currentIndex - value.step
+                }
             }
 
             zoomPlayer(newData[turn].id)
@@ -310,6 +292,19 @@ export default function Welcome({ }) {
     console.log(players)
 
     useEffect(() => {
+        gsap.to(`#div-cross--1`, {
+            motionPath: {
+                path: "#path",
+                align: "#path",
+                alignOrigin: [0.5, 0.5],
+                autoRotate: false,
+                start: 0,
+                end: 0,
+            },
+            transformOrigin: "50% 50%",
+            duration: 0,
+            ease: "power1.inOut",
+        });
         for (let i = 0; i < dataCross.length; i++) {
             gsap.to(`#div-cross-${i}`, {
                 motionPath: {
@@ -434,18 +429,39 @@ export default function Welcome({ }) {
                             />
                         </div>
                     ))}
+                    <div id={`div-cross--1`} className='absolute top-[25%] left-[60%]'>
+                        <div className='w-[80px] h-[80px] bg-blue-200 rounded-full flex flex-col- items-center justify-center'>
+                            <p className='text-xl font-bounce'>START</p>
+                        </div>
+                    </div>
                     {dataCross.map((item, index) => (
                         <Fragment key={index}>
-                            <div id={`div-cross-${index}`} className='absolute top-[25%] left-[60%]'>
-                                {item.icon ? (
-                                    <img
-                                        src={item.icon}
-                                        className='w-[40px] h-[40px] object-contain'
-                                    />
-                                ) : (
-                                    <div className='w-[40px] h-[40px] bg-yellow-100 rounded-full' />
-                                )}
-                            </div>
+                            {dataCross.length - 1 === index ? (
+                                <div id={`div-cross-${index}`} className='absolute top-[25%] left-[60%]'>
+                                    {item.icon ? (
+                                        <div className='w-[80px] h-[80px] bg-green-200 rounded-full flex flex-col items-center justify-center'>
+                                            <img
+                                                src={item.icon}
+                                                className='w-[40px] h-[40px] object-contain'
+                                            />
+                                            <p className='text-xs font-bounce'>FINISH</p>
+                                        </div>
+                                    ) : (
+                                        <div className='w-[40px] h-[40px] bg-yellow-100 rounded-full' />
+                                    )}
+                                </div>
+                            ) : (
+                                <div id={`div-cross-${index}`} className='absolute top-[25%] left-[60%]'>
+                                    {item.icon ? (
+                                        <img
+                                            src={item.icon}
+                                            className='w-[40px] h-[40px] object-contain'
+                                        />
+                                    ) : (
+                                        <div className='w-[40px] h-[40px] bg-yellow-100 rounded-full' />
+                                    )}
+                                </div>
+                            )}
                         </Fragment>
                     ))}
                     <div className='absolute left-0 -top-[22%] z-[30]'>
@@ -490,7 +506,7 @@ export default function Welcome({ }) {
                     )}
                     <div className='absolute -top-[20%] right-0'>
                         <Dice
-                            // cheatValue={5}
+                            // cheatValue={2}
                             onRoll={(value) => {
                                 let newData = [...players]
 
@@ -499,7 +515,19 @@ export default function Welcome({ }) {
                                 const nextIndex = (newData[turn].currentIndex + value)
 
                                 if (nextIndex > dataCross.length) {
-                                    const diff = Math.abs(nextIndex - (dataCross.length - 1))
+                                    let newIndex = nextIndex
+                                    if(nextIndex === 34 && value === 5){
+                                        newIndex = nextIndex + 3
+                                    } else if(nextIndex === 34 && value === 4){
+                                        newIndex = nextIndex + 2
+                                    } else if(nextIndex === 35 && value === 5){
+                                        newIndex = nextIndex + 1
+                                    } else if(nextIndex === 35 && value === 4){
+                                        newIndex = nextIndex + 2
+                                    }
+                                    const diff = Math.abs(newIndex - dataCross.length)
+
+                                    console.log('diff: ', diff)
 
                                     newData[turn] = {
                                         ...newData[turn],
