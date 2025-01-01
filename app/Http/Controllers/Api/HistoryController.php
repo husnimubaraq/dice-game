@@ -34,7 +34,7 @@ class HistoryController extends Controller
 
     public function leaderboard(Request $request)
     {
-        $history = Leaderboard::get();
+        $history = Leaderboard::orderBy('score', 'desc')->limit(3)->get();
 
         return response()->json($history);
     }

@@ -51,9 +51,10 @@ export default function Leaderboard({ }) {
 
             const { data: histories } = await axios.get(route('leaderboards'))
 
-            const newData = getHighestScores(histories);
+            const newData = histories
 
             const swipedData = [newData[1], newData[0], ...newData.slice(2)];
+
             setTopPlayer(swipedData)
         }
     } 

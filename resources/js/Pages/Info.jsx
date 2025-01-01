@@ -41,10 +41,6 @@ export default function Info({ }) {
                         <ul>•	Pertanyaan 1-5: Setiap soal bernilai 4 poin.</ul>
                         <ul>•	Pertanyaan 6-10: Setiap soal bernilai 7 poin.</ul>
                         <ul>•	Pertanyaan 11-15: Setiap soal bernilai 9 poin.</ul>
-                        <ul>•	Papan Peringkat: Memuat daftar peringkat berdasarkan skor permainan.</ul>
-                        <ul>•	Home: Mengarahkan pemain kembali ke tampilan utama.</ul>
-                        <ul>•	Kembali: Mengembalikan pemain ke tampilan sebelumnya.</ul>
-                        <ul>•	Lanjut: Melanjutkan ke tampilan berikutnya.</ul>
                     </ul>
                 </div>
                 <div className="bg-[#f2b480] p-5 flex flex-col rounded-l-3xl">
@@ -59,7 +55,7 @@ export default function Info({ }) {
                         <ul>•	Waktu Menjawab: Jika pemain tidak menjawab pertanyaan dalam waktu 75 detik, maka permain tidak diberi kesempatan memutar dadu.</ul>
                     </ul>
                 </div>
-                <div className="bg-[#f2b480] p-5 flex flex-col rounded-l-3xl">
+                <div className="bg-[#f2b480] p-5 flex flex-col rounded-r-3xl">
                     <p className="text-3xl font-bold mt-5 mb-2 text-center">Cara Bermain</p>
                     <ul className="list-disc text-xl/10 mt-5">
                         <ul>•	Pada halaman utama tekan tombol Play untuk memulai game nya.</ul>
