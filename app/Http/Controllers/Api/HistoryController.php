@@ -66,4 +66,19 @@ class HistoryController extends Controller
             ]);
         }
     }
+
+    public function destroy(Request $request, $id)
+    {
+        try {
+            $history = History::find($id);
+            $history->delete();
+
+            return Redirect::back();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed'
+            ]);
+        }
+    }
 }

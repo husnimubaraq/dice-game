@@ -42,7 +42,7 @@ export default function Riwayat({ }) {
                         <th class="p-3">No</th>
                         <th class="p-3 w-[400px] text-left">Tanggal</th>
                         <th class="p-3">Jumlah Pemain</th>
-                        <th class="p-3 w-[300px]">Papan Peringkat</th>
+                        <th class="p-3 w-[300px]"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,10 +53,19 @@ export default function Riwayat({ }) {
                                 <td class="p-3 font-medium capitalize w-[400px]">{dayjs(item.created_at).format('DD MMMM YYYY, hh:mm')}</td>
                                 <td class="p-3 text-center">{item.leaderboards.length}</td>
                                 <td class="p-3 pb-5 w-[300px]">
-                                    <div className="flex flex-col items-center">
-                                        <Button title="Lihat" className="w-[100px]" onClick={() => router.visit(route('leaderboard', {
+                                    <div className="flex flex-col items-center gap-5">
+                                        <Button title="Papan Peringkat" className="w-[200px]" onClick={() => router.visit(route('leaderboard', {
                                             id: item.id
                                         }))} />
+                                        <Button title="Hapus" className="w-[150px]" onClick={() => {
+                                            router.post(route('histories.destroy', {
+                                                id: item.id
+                                            }), {}, {
+                                                onSuccess: (res) => {
+                                                    window.location.reload()
+                                                }
+                                            })
+                                        }} />
                                     </div>
                                 </td>
                             </tr>

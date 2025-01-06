@@ -100,7 +100,7 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                         </div>
                         <div className='relative flex flex-col p-[30px] bg-black/30  rounded-[50px]'>
                             <div className='flex items-center gap-5'>
-                                <p className="mt-2 text-2xl text-white flex-1">
+                                <p className="mt-2 text-4xl text-white flex-1">
                                     {question.question}
                                 </p>
                                 <div className='h-20 w-20 rounded-full flex flex-col items-center justify-center bg-yellow-500'>
@@ -113,7 +113,7 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                                         <button
                                             onClick={() => onCheck(item)}
                                             className={twMerge(
-                                                'py-5 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-sm text-white hover:text-white',
+                                                'py-5 px-3 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-2xl text-white hover:text-white',
                                                 activeAnswer === item ? `${activeColor} bg-opacity-80` : 'bg-yellow-400'
                                             )}
                                         >
