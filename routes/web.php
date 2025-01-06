@@ -39,6 +39,8 @@ Route::post('/question/check', [QuestionController::class, 'checkAnswer'])->name
 
 Route::get('/histories', [HistoryController::class, 'index'])->name('histories');
 Route::get('/histories/{id}', [HistoryController::class, 'detail'])->name('histories.detail');
+Route::post('/histories/{id}/delete', [HistoryController::class, 'destroy'])->name('histories.destroy');
+Route::post('/histories', [HistoryController::class, 'store'])->name('histories.store');
 Route::post('/histories', [HistoryController::class, 'store'])->name('histories.store');
 Route::get('/leaderboards', [HistoryController::class, 'leaderboard'])->name('leaderboards');
 
