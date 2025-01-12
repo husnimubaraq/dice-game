@@ -84,13 +84,13 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
 
     return (
         <Dialog open={isOpen} as="div" className="relative z-[999] focus:outline-none" onClose={onCancel}>
-            <div className="fixed inset-0 z-[999] w-screen overflow-y-auto">
+            <div className="fixed inset-0 z-[999]  overflow-y-auto">
                 <div
                     className="flex min-h-full items-center justify-center p-4"
                 >
                     <DialogPanel
                         transition
-                        className="w-full max-w-[100vh] rounded-xl relative duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                        className="w-full max-w-[calc(100vh+250px)] h-auto rounded-xl relative duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
                     >
                         <div className='absolute inset-0'>
                             <img
@@ -98,9 +98,9 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                                 className='w-full h-full object-cover rounded-[50px]'
                             />
                         </div>
-                        <div className='relative flex flex-col p-[30px] bg-black/30  rounded-[50px]'>
+                        <div className='relative flex flex-col p-[30px] bg-black/50  rounded-[50px]'>
                             <div className='flex items-center gap-5'>
-                                <p className="mt-2 text-4xl text-white flex-1">
+                                <p className="mt-2 text-5xl text-white flex-1 text-justify">
                                     {question.question}
                                 </p>
                                 <div className='h-20 w-20 rounded-full flex flex-col items-center justify-center bg-yellow-500'>
@@ -113,7 +113,7 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                                         <button
                                             onClick={() => onCheck(item)}
                                             className={twMerge(
-                                                'py-5 px-3 rounded-full w-full bg-yellow-400 backdrop-filter backdrop-blur-sm bg-opacity-40 hover:border-white border-2 border-transparent text-2xl text-white hover:text-white',
+                                                'py-5 px-10 rounded-full w-full bg-yellow-400 hover:border-white border-2 border-transparent text-justify text-4xl text-black hover:text-white',
                                                 activeAnswer === item ? `${activeColor} bg-opacity-80` : 'bg-yellow-400'
                                             )}
                                         >
