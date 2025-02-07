@@ -2,10 +2,14 @@ import { router } from "@inertiajs/react";
 import { Button } from "./Components/Button";
 import useSound from "use-sound";
 import { useEffect } from "react";
+import { useIsMobile } from "@/Hooks/useMediaQuery";
+import { twMerge } from "tailwind-merge";
 
 export default function Home({ }) {
 
     const [play, exposedData] = useSound('/assets/sounds/background.mp3')
+
+    const isMobile = useIsMobile()
 
     useEffect(() => {
         play()
@@ -13,7 +17,10 @@ export default function Home({ }) {
 
     return (
         <div
-            className="flex flex-col h-screen w-screen bg-cover bg-bottom"
+            className={twMerge(
+                "flex flex-col h-screen w-screen bg-cover bg-bottom",
+                isMobile && ""
+            )}
             style={{
                 backgroundImage: "url('/assets/images/bg-2.jpg')"
             }}
@@ -28,12 +35,21 @@ export default function Home({ }) {
                         onClick={() => router.visit(route('player'))}
                     />
                 </div>
-                <div className="flex items-center justify-center gap-10 z-50">
-                    <Button title="MATERI" onClick={() => router.visit(route('materi'))}/>
-                    <Button title="INFO" onClick={() => router.visit(route('info'))}/>
-                    <Button title="RIWAYAT PERMAINAN" onClick={() => router.visit(route('riwayat'))}/>
-                    <Button title="PAPAN PERINGKAT" onClick={() => router.visit(route('leaderboard'))}/>
-                </div>
+                {isMobile ? (
+                    <div className="grid grid-cols-2 gap-10 z-50">
+                        <Button title="MATERI" onClick={() => router.visit(route('materi'))}/>
+                        <Button title="INFO" onClick={() => router.visit(route('info'))}/>
+                        <Button title="RIWAYAT PERMAINAN" textClassName="text-sm text-center" onClick={() => router.visit(route('riwayat'))} />
+                        <Button title="PAPAN PERINGKAT" textClassName="text-sm" onClick={() => router.visit(route('leaderboard'))} />
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-center gap-10 z-50">
+                        <Button title="MATERI" onClick={() => router.visit(route('materi'))}/>
+                        <Button title="INFO" onClick={() => router.visit(route('info'))}/>
+                        <Button title="RIWAYAT PERMAINAN" textClassName="" onClick={() => router.visit(route('riwayat'))}/>
+                        <Button title="PAPAN PERINGKAT" textClassName="" onClick={() => router.visit(route('leaderboard'))}/>
+                    </div>
+                )}
                 <div className="absolute bottom-0 -right-[20%] ">
                     <img
                         src="/assets/images/bg-diponegoro.png"
@@ -41,6 +57,7 @@ export default function Home({ }) {
                     />
                 </div>
             </div>
+            {isMobile && <div className="absolute inset-0 h-[200px] w-full bg-gradient-to-b from-black/50 to-nuetral-300 z-[40]" />}
         </div>
     )
 }

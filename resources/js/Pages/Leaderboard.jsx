@@ -3,6 +3,7 @@ import { Fragment, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Button } from "./Components/Button"
 import useDeepCompareEffect from "use-deep-compare-effect"
+import { useIsMobile } from "@/Hooks/useMediaQuery"
 
 function getHighestScores(data) {
     // Group data by history_id
@@ -24,6 +25,8 @@ function getHighestScores(data) {
 
 
 export default function Leaderboard({ }) {
+
+    const isMobile = useIsMobile()
 
     const [data, setData] = useState([])
     const [topPlayer, setTopPlayer] = useState([])
@@ -57,7 +60,7 @@ export default function Leaderboard({ }) {
 
             setTopPlayer(swipedData)
         }
-    } 
+    }
 
     useDeepCompareEffect(() => {
         init()
@@ -96,15 +99,24 @@ export default function Leaderboard({ }) {
                                 index === 1 && "h-[250px]",
                                 index === 0 && "h-[230px]"
                             )}>
-                                <div className="relative w-[100px] h-[100px] pt-5">
+                                <div className={twMerge(
+                                    "relative w-[100px] h-[100px] pt-5",
+                                    isMobile && "w-[80px] h-[80px]"
+                                )}>
                                     <img
                                         src={item.image}
-                                        className="w-[100px] h-[100px] object-contain"
+                                        className={twMerge(
+                                            "w-[100px] h-[100px] object-contain",
+                                            isMobile && "w-[80px] h-[80px]"
+                                        )}
                                     />
                                     <div className="absolute left-0 right-0 flex flex-col items-center" style={{top: crown.top}}>
                                         <img
                                             src={crown.image}
-                                            className="w-[50px] h-[50px] object-contain"
+                                            className={twMerge(
+                                                "w-[50px] h-[50px] object-contain",
+                                                isMobile && "w-[30px] h-[30px]"
+                                            )}
                                         />
                                     </div>
                                 </div>
@@ -124,7 +136,10 @@ export default function Leaderboard({ }) {
                                 src={item.image}
                                 className="w-[50px] h-[50px] object-contain"
                             />
-                            <div className="flex items-center justify-between w-[500px]">
+                            <div className={twMerge(
+                                "flex items-center justify-between w-[500px]",
+                                isMobile && "w-[300px]"
+                            )}>
                                 <p className="text-lg font-bounce">{item.name}</p>
                                 <p className="text-lg font-bounce">{item.score}</p>
                             </div>

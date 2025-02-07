@@ -4,8 +4,11 @@ import { Button } from "./Components/Button";
 import "./index.css"
 import { router } from "@inertiajs/react";
 import { twMerge } from "tailwind-merge";
+import { useIsMobile } from "@/Hooks/useMediaQuery";
 
 export default function Character({ }) {
+
+    const isMobile = useIsMobile()
 
     const [players, setPlayers] = useState([])
 
@@ -79,7 +82,10 @@ export default function Character({ }) {
                             />
                         </div>
                     </div>
-                    <div className="flex items-center gap-[50px]">
+                    <div className={twMerge(
+                        " gap-[50px]",
+                        isMobile ? "grid grid-cols-2" : "flex items-center"
+                    )}>
                         {charactes.map((item, index) => {
                             const characteActive = players.find(x => x.image === item)
 
@@ -153,6 +159,7 @@ export default function Character({ }) {
                     />
                 </div>
             </div>
+            {isMobile && <div className="absolute inset-0 h-[200px] w-full bg-gradient-to-b from-black/50 to-nuetral-300 z-[40]" />}
         </div>
     )
 }
