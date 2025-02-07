@@ -14,6 +14,8 @@ import "./index.css"
 import { Winner } from './Winner';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { useIsMobile } from '@/Hooks/useMediaQuery';
+import { twMerge } from 'tailwind-merge';
 
 const POINT = 0.03
 
@@ -51,6 +53,10 @@ const zoomPlayer = (playerId) => {
 }
 
 export default function Welcome({ }) {
+
+    const isMobile = useIsMobile()
+
+    const [isLandscape, setIsLandscape] = useState(false)
 
     const [turn, setTurn] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
@@ -237,14 +243,14 @@ export default function Welcome({ }) {
 
             const current = (newData[turn].currentIndex - value.step)
 
-            if(current < 1){
+            if (current < 1) {
                 newData[turn] = {
                     ...newData[turn],
                     prevPoint: newData[turn].currentPoint,
                     currentPoint: 0,
                     currentIndex: newData[turn].currentIndex - value.step
                 }
-            }else{
+            } else {
                 newData[turn] = {
                     ...newData[turn],
                     prevPoint: newData[turn].currentPoint,
@@ -269,6 +275,14 @@ export default function Welcome({ }) {
             }
         }
     }
+
+    useEffect(() => {
+        if (isMobile) {
+            screen.orientation.addEventListener("change", () => {
+                setIsLandscape(screen.orientation.type === "landscape-primary")
+            });
+        }
+    }, [isMobile, isLandscape])
 
     useEffect(() => {
         let dataPlayers = localStorage.getItem('players')
@@ -320,7 +334,7 @@ export default function Welcome({ }) {
                 ease: "power1.inOut",
             });
         }
-    }, [dataCross])
+    }, [dataCross, isLandscape])
 
     useEffect(() => {
         const player = players.find(x => x.id === turn)
@@ -339,8 +353,8 @@ export default function Welcome({ }) {
                 duration: 3,
                 ease: "power1.inOut",
             });
-        } else{
-            for(let item of players){
+        } else {
+            for (let item of players) {
                 gsap.to(`#div-${item.id}`, {
                     motionPath: {
                         path: "#path",
@@ -356,7 +370,7 @@ export default function Welcome({ }) {
                 });
             }
         }
-    }, [players, isInit])
+    }, [players, isInit, isLandscape])
 
     useEffect(() => {
         if (players.length > 0) {
@@ -413,25 +427,37 @@ export default function Welcome({ }) {
             <main className='flex flex-col h-screen w-screen relative overflow-hidden' id="map">
                 <img
                     src='/assets/images/bg-4.png'
-                    className='w-full h-full object-contain'
+                    className={twMerge(
+                        'w-full h-full object-contain',
+                        isLandscape && "object-cover"
+                    )}
                 />
                 <div className='absolute -bottom-2 left-[30%]'>
 
                     <CrossPath
                         id="path"
-                        className="w-[983px] h-[775px] "
+                        className={twMerge(
+                            "w-[983px] h-[775px]",
+                            isLandscape && "w-[543px] h-[435px]"
+                        )}
                     />
                     {players.map((player) => (
                         <div key={player.id} id={`div-${player.id}`} className='z-30 absolute top-[5%] left-[30%] h-[50px] w-[50px]'>
                             <img
                                 src={player.image}
-                                className='w-[50px] h-[50px] object-contain'
+                                className={twMerge(
+                                    'w-[50px] h-[50px] object-contain',
+                                    isLandscape && "w-[30px] h-[30px]"
+                                )}
                             />
                         </div>
                     ))}
                     <div id={`div-cross--1`} className='absolute top-[25%] left-[60%]'>
-                        <div className='w-[80px] h-[80px] bg-blue-200 rounded-full flex flex-col- items-center justify-center'>
-                            <p className='text-xl font-bounce'>START</p>
+                        <div className={twMerge(
+                            'w-[80px] h-[80px] bg-blue-200 rounded-full flex flex-col- items-center justify-center',
+                            isLandscape && "w-[40px] h-[40px]"
+                        )}>
+                            <p className={twMerge('text-xl font-bounce', isLandscape && "text-[8px]")}>START</p>
                         </div>
                     </div>
                     {dataCross.map((item, index) => (
@@ -439,15 +465,24 @@ export default function Welcome({ }) {
                             {dataCross.length - 1 === index ? (
                                 <div id={`div-cross-${index}`} className='absolute top-[25%] left-[60%]'>
                                     {item.icon ? (
-                                        <div className='w-[80px] h-[80px] bg-green-200 rounded-full flex flex-col items-center justify-center'>
+                                        <div className={twMerge(
+                                            'w-[80px] h-[80px] bg-green-200 rounded-full flex flex-col items-center justify-center',
+                                            isLandscape && "w-[40px] h-[40px]"
+                                        )}>
                                             <img
                                                 src={item.icon}
-                                                className='w-[40px] h-[40px] object-contain'
+                                                className={twMerge(
+                                                    'w-[40px] h-[40px] object-contain',
+                                                    isLandscape && "w-[20px] h-[20px]"
+                                                )}
                                             />
-                                            <p className='text-xs font-bounce'>FINISH</p>
+                                            <p className={twMerge('text-xs font-bounce', isLandscape && "text-[8px]")}>FINISH</p>
                                         </div>
                                     ) : (
-                                        <div className='w-[40px] h-[40px] bg-yellow-100 rounded-full' />
+                                        <div className={twMerge(
+                                            'w-[40px] h-[40px] bg-yellow-100 rounded-full',
+                                            isLandscape && "w-[20px] h-[20px]"
+                                        )} />
                                     )}
                                 </div>
                             ) : (
@@ -455,26 +490,45 @@ export default function Welcome({ }) {
                                     {item.icon ? (
                                         <img
                                             src={item.icon}
-                                            className='w-[40px] h-[40px] object-contain'
+                                            className={twMerge(
+                                                'w-[40px] h-[40px] object-contain',
+                                                isLandscape && "w-[20px] h-[20px]"
+                                            )}
                                         />
                                     ) : (
-                                        <div className='w-[40px] h-[40px] bg-yellow-100 rounded-full' />
+                                        <div className={twMerge(
+                                            'w-[40px] h-[40px] bg-yellow-100 rounded-full',
+                                            isLandscape && "w-[20px] h-[20px]"
+                                        )} />
                                     )}
                                 </div>
                             )}
                         </Fragment>
                     ))}
-                    <div className='absolute left-0 -top-[22%] z-[30]'>
-                        <div className="w-[358px] h-[261px] relative">
+                    <div className={twMerge(
+                        'absolute left-0 z-[30]',
+                        isLandscape ? "bottom-[10%] -left-[40%]" : "-top-[22%]"
+                    )}>
+                        <div className={twMerge(
+                            "w-[358px] h-[261px] relative",
+                            isLandscape && "w-[158px] h-[161px]"
+                        )}>
                             <img
                                 src='/assets/images/bg-info-2.png'
-                                className='w-full h-full object-cover'
+                                className={
+                                    twMerge(
+                                        'w-full h-full object-cover',
+                                    )
+                                }
                             />
                             <div className='absolute inset-0 z-50'>
-                                <div className='flex flex-col-reverse gap-3 relative overflow-hidden px-12 h-[200px] mt-3'>
+                                <div className={twMerge(
+                                    'flex flex-col-reverse gap-3 relative overflow-hidden px-12 h-[200px] mt-3',
+                                    isLandscape && "px-0 h-[130px]"
+                                )}>
                                     {logsFilterred.map((item, index) => (
                                         <Fragment key={index}>
-                                            <p>{item}</p>
+                                            <p className={twMerge(isLandscape && "text-xs")}>{item}</p>
                                         </Fragment>
                                     ))}
                                 </div>
@@ -482,7 +536,10 @@ export default function Welcome({ }) {
                         </div>
                     </div>
                     {players.length > 0 && (
-                        <div className='absolute -left-[20%] -top-[20%]'>
+                        <div className={twMerge(
+                            'absolute ',
+                            isLandscape ? "bottom-[50%] -left-[40%]" : "-left-[20%] -top-[20%]"
+                        )}>
                             <div
                                 className="w-[150px] h-[150px] relative"
                             >
@@ -504,7 +561,10 @@ export default function Welcome({ }) {
                             </div>
                         </div>
                     )}
-                    <div className='absolute -top-[20%] right-0'>
+                    <div className={twMerge(
+                        'absolute ',
+                        isLandscape ? "bottom-[10%] right-0" : "-top-[20%] right-0"
+                    )}>
                         <Dice
                             // cheatValue={2}
                             onRoll={(value) => {
@@ -516,13 +576,13 @@ export default function Welcome({ }) {
 
                                 if (nextIndex > dataCross.length) {
                                     let newIndex = nextIndex
-                                    if(nextIndex === 34 && value === 5){
+                                    if (nextIndex === 34 && value === 5) {
                                         newIndex = nextIndex + 3
-                                    } else if(nextIndex === 34 && value === 4){
+                                    } else if (nextIndex === 34 && value === 4) {
                                         newIndex = nextIndex + 2
-                                    } else if(nextIndex === 35 && value === 5){
+                                    } else if (nextIndex === 35 && value === 5) {
                                         newIndex = nextIndex + 1
-                                    } else if(nextIndex === 35 && value === 4){
+                                    } else if (nextIndex === 35 && value === 4) {
                                         newIndex = nextIndex + 2
                                     }
                                     const diff = Math.abs(newIndex - dataCross.length)
@@ -555,6 +615,7 @@ export default function Welcome({ }) {
 
             {players.length > 0 && (
                 <Question
+                    isLandscape={isLandscape}
                     isOpen={isOpen}
                     onCancel={() => setIsOpen(false)}
                     onResult={onResult}

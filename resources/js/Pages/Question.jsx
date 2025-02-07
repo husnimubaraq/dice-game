@@ -3,8 +3,11 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import { twMerge } from 'tailwind-merge'
+import { useIsMobile } from '@/Hooks/useMediaQuery'
 
-export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { }, onResult, onTimeout }) => {
+export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { }, onResult, onTimeout, isLandscape }) => {
+
+    const isMobile = useIsMobile()
 
     const [time, setTime] = useState(75);
     const [isRunning, setIsRunning] = useState(false);
@@ -14,7 +17,7 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
     const [activeAnswer, setActiveAnswer] = useState(null)
 
     const init = async () => {
-        if(isOpen){
+        if (isOpen) {
             const { data } = await axios.get(route('question', {
                 number: selectedQuestion.number
             }))
@@ -33,26 +36,26 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
         let timer;
 
         if (isRunning && isOpen) {
-          timer = setInterval(() => {
-            setTime((prevTime) => {
-              if (prevTime <= 1) {
-                clearInterval(timer);
-                setIsRunning(false);
-                onTimeout && onTimeout()
-                onCancel && onCancel()
-                setTime(75)
-                return 0;
-              }
-              return prevTime - 1;
-            });
-          }, 1000);
+            timer = setInterval(() => {
+                setTime((prevTime) => {
+                    if (prevTime <= 1) {
+                        clearInterval(timer);
+                        setIsRunning(false);
+                        onTimeout && onTimeout()
+                        onCancel && onCancel()
+                        setTime(75)
+                        return 0;
+                    }
+                    return prevTime - 1;
+                });
+            }, 1000);
         }
 
         // Cleanup the interval on component unmount or when isRunning changes
         return () => clearInterval(timer);
-      }, [isRunning, isOpen]);
+    }, [isRunning, isOpen]);
 
-    if(!question) return null
+    if (!question) return null
 
     const onCheck = async (answer) => {
 
@@ -64,9 +67,9 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
 
         setActiveAnswer(answer)
 
-        if(data.status){
+        if (data.status) {
             setActiveColor('bg-green-500')
-        }else{
+        } else {
             setActiveColor('bg-red-500')
         }
 
@@ -80,17 +83,23 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
 
     }
 
-    if(!isOpen) return null
+    if (!isOpen) return null
 
     return (
         <Dialog open={isOpen} as="div" className="relative z-[999] focus:outline-none" onClose={onCancel}>
             <div className="fixed inset-0 z-[999]  overflow-y-auto">
                 <div
-                    className="flex min-h-full items-center justify-center p-4"
+                    className={twMerge(
+                        "flex min-h-full items-center justify-center p-4",
+                        isLandscape && "min-h-fit"
+                    )}
                 >
                     <DialogPanel
                         transition
-                        className="w-full max-w-[calc(100vh+250px)] h-auto rounded-xl relative duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                        className={twMerge(
+                            "w-full max-w-[calc(100vh+250px)] h-auto rounded-xl relative duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0",
+                            isLandscape && "w-fit"
+                        )}
                     >
                         <div className='absolute inset-0'>
                             <img
@@ -100,7 +109,10 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                         </div>
                         <div className='relative flex flex-col p-[30px] bg-black/50  rounded-[50px]'>
                             <div className='flex items-center gap-5'>
-                                <p className="mt-2 text-5xl text-white flex-1 text-justify">
+                                <p className={twMerge(
+                                    "mt-2 text-5xl text-white flex-1 text-justify",
+                                    isLandscape && "text-xl"
+                                )}>
                                     {question.question}
                                 </p>
                                 <div className='h-20 w-20 rounded-full flex flex-col items-center justify-center bg-yellow-500'>
@@ -114,7 +126,8 @@ export const Question = ({ isOpen, data: selectedQuestion, onCancel = () => { },
                                             onClick={() => onCheck(item)}
                                             className={twMerge(
                                                 'py-5 px-10 rounded-full w-full bg-yellow-400 hover:border-white border-2 border-transparent text-justify text-4xl text-black hover:text-white',
-                                                activeAnswer === item ? `${activeColor} bg-opacity-80` : 'bg-yellow-400'
+                                                activeAnswer === item ? `${activeColor} bg-opacity-80` : 'bg-yellow-400',
+                                                isLandscape && "text-lg"
                                             )}
                                         >
                                             {item}

@@ -4,8 +4,12 @@ import { router } from "@inertiajs/react"
 import { Button } from "./Components/Button"
 import axios from "axios"
 import dayjs from "dayjs"
+import { useIsMobile } from "@/Hooks/useMediaQuery"
+import { RiwayatMobile } from "./RiwayatMobile"
 
 export default function Riwayat({ }) {
+
+    const isMobile = useIsMobile()
 
     const [data, setData] = useState([])
 
@@ -19,14 +23,9 @@ export default function Riwayat({ }) {
         init()
     }, [])
 
-    // useEffect(() => {
-    //     let dataHistories = localStorage.getItem('histories')
-
-    //     if(dataHistories){
-    //         dataHistories = JSON.parse(dataHistories)
-    //         setData(dataHistories)
-    //     }
-    // }, [])
+    if(isMobile){
+        return <RiwayatMobile data={data} />
+    }
 
     return (
         <div

@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Button } from "./Components/Button";
 import { router } from "@inertiajs/react";
+import { useIsMobile } from "@/Hooks/useMediaQuery";
+import { twMerge } from "tailwind-merge";
 
 export default function Player({ }) {
+
+    const isMobile = useIsMobile()
 
     const [players, setPlayers] = useState([
         {
@@ -42,7 +46,10 @@ export default function Player({ }) {
                 <h1 className="text-5xl font-bounce text-white text-center z-50">Tentukan berapa banyak player</h1>
                 <div className="flex flex-col items-center gap-10 z-50">
                     <h1 className="text-5xl font-bounce text-white text-center">Total Player</h1>
-                    <div className="flex items-center gap-10">
+                    <div className={twMerge(
+                        "gap-10",
+                        isMobile ? "grid grid-cols-3" : "flex items-center"
+                    )}>
                         <Button
                             className="w-[70px] h-[70px] !rounded-full"
                             textClassName="text-3xl"
@@ -91,6 +98,7 @@ export default function Player({ }) {
                     />
                 </div>
             </div>
+            {isMobile && <div className="absolute inset-0 h-[200px] w-full bg-gradient-to-b from-black/50 to-nuetral-300 z-[40]" />}
         </div>
     )
 }

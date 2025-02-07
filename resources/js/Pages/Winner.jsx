@@ -5,8 +5,9 @@ import { XMarkIcon } from '@heroicons/react/24/solid'
 
 import "./winner.css"
 import { router } from '@inertiajs/react'
+import { twMerge } from 'tailwind-merge'
 
-export const Winner = ({ isOpen, data, onCancel = () => { } }) => {
+export const Winner = ({ isOpen, data, onCancel = () => { }, isLandscape }) => {
 
     if (!isOpen) return null
 
@@ -16,11 +17,17 @@ export const Winner = ({ isOpen, data, onCancel = () => { } }) => {
         <Dialog open={isOpen} as="div" className="relative z-[99] focus:outline-none" onClose={() => {}}>
             <div className="fixed inset-0 z-[99] w-screen overflow-y-auto">
                 <div
-                    className="flex min-h-full items-center justify-center p-4"
+                    className={twMerge(
+                        "flex min-h-full items-center justify-center p-4",
+                        isLandscape && "min-h-fit"
+                    )}
                 >
                     <DialogPanel
                         transition
-                        className="w-full max-w-lg h-[500px] relative duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                        className={twMerge(
+                            "w-full max-w-lg h-[500px] relative duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0",
+                            isLandscape && "w-fit h-fit"
+                        )}
                     >
                         {/* <Button title="Home" /> */}
                         {/* <div className='flex items-center justify-between'>
@@ -34,7 +41,10 @@ export const Winner = ({ isOpen, data, onCancel = () => { } }) => {
                             src='/assets/images/bg-winner.png'
                             className='w-full h-full '
                         />
-                        <div className="confetti absolute left-0 right-0 top-10">
+                        <div className={twMerge(
+                            "confetti absolute left-0 right-0 top-10",
+                            isLandscape && "top-0"
+                        )}>
                             <div className="confetti-piece"></div>
                             <div className="confetti-piece"></div>
                             <div className="confetti-piece"></div>
@@ -55,7 +65,9 @@ export const Winner = ({ isOpen, data, onCancel = () => { } }) => {
                             <div className="confetti-piece"></div>
                             <div className="confetti-piece"></div>
                         </div>
-                        <div className='absolute top-[75px] left-0 right-0'>
+                        <div className={twMerge(
+                            'absolute top-[75px] left-0 right-0',
+                        )}>
                             <p className='font-bounce text-3xl text-center text-neutral-700'>Pemenang</p>
                         </div>
                         <div className='absolute inset-0 z-50 flex flex-col items-center justify-center mt-5'>
