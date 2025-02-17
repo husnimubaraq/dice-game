@@ -426,7 +426,7 @@ export default function Welcome({ }) {
             <Head title="Welcome" />
             <main className={twMerge(
                 'flex flex-col h-screen w-screen relative overflow-hidden',
-                isLandscape && "h-fit"
+                isLandscape && "h-fit w-fit "
             )} id="map">
                 <img
                     src='/assets/images/bg-4.png'
@@ -435,13 +435,13 @@ export default function Welcome({ }) {
                         isLandscape && "object-cover"
                     )}
                 />
-                <div className='absolute -bottom-2 left-[30%]'>
+                <div className='absolute bottom-[10%] left-[5%]'>
 
                     <CrossPath
                         id="path"
                         className={twMerge(
                             "w-[983px] h-[775px]",
-                            isLandscape && "w-[543px] h-[435px]"
+                            isLandscape && "w-fit h-[435px]"
                         )}
                     />
                     {players.map((player) => (
@@ -510,11 +510,11 @@ export default function Welcome({ }) {
                     ))}
                     <div className={twMerge(
                         'absolute left-0 z-[30]',
-                        isLandscape ? "bottom-[10%] -left-[40%]" : "-top-[22%]"
+                        isLandscape ? "-top-[1%] left-[15%]" : "-top-[22%]"
                     )}>
                         <div className={twMerge(
                             "w-[358px] h-[261px] relative",
-                            isLandscape && "w-[158px] h-[161px]"
+                            isLandscape && "w-[98px] h-[101px]"
                         )}>
                             <img
                                 src='/assets/images/bg-info-2.png'
@@ -527,11 +527,11 @@ export default function Welcome({ }) {
                             <div className='absolute inset-0 z-50'>
                                 <div className={twMerge(
                                     'flex flex-col-reverse gap-3 relative overflow-hidden px-12 h-[200px] mt-3',
-                                    isLandscape && "px-0 h-[130px]"
+                                    isLandscape && "px-2 h-[80px] gap-1"
                                 )}>
                                     {logsFilterred.map((item, index) => (
                                         <Fragment key={index}>
-                                            <p className={twMerge(isLandscape && "text-xs")}>{item}</p>
+                                            <p className={twMerge(isLandscape && "text-[10px]")}>{item}</p>
                                         </Fragment>
                                     ))}
                                 </div>
@@ -541,24 +541,30 @@ export default function Welcome({ }) {
                     {players.length > 0 && (
                         <div className={twMerge(
                             'absolute ',
-                            isLandscape ? "bottom-[50%] -left-[40%]" : "-left-[20%] -top-[20%]"
+                            isLandscape ? "-top-[1%] -left-[5%]" : "-left-[20%] -top-[20%]"
                         )}>
                             <div
-                                className="w-[150px] h-[150px] relative"
+                                className={twMerge(
+                                    "w-[150px] h-[150px] relative",
+                                    isLandscape && "w-[100px] h-[100px]"
+                                )}
                             >
                                 <img
                                     src='/assets/images/bg-character.png'
                                     className='w-full h-full object-contain'
                                 />
                                 <div className="absolute -top-3 left-0 right-0 flex flex-col items-center">
-                                    <div className="flex flex-col items-center bg-[#dbbe9d] rounded-md w-[90px] py-1 relative overflow-hidden">
+                                    <div className="flex flex-col items-center bg-[#dbbe9d] rounded-md w-[60px] py-1 relative overflow-hidden">
                                         <h1 className="font-bounce">{players[turn].name}</h1>
                                     </div>
                                 </div>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                                     <img
                                         src={players[turn].image}
-                                        className='w-[100px] h-[100px] object-contain'
+                                        className={twMerge(
+                                            'w-[100px] h-[100px] object-contain',
+                                            isLandscape && "w-[50px] h-[50px]"
+                                        )}
                                     />
                                 </div>
                             </div>
