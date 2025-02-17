@@ -29,7 +29,7 @@ export default function Login({ status, canResetPassword }) {
         <div
             className={twMerge(
                 "flex flex-col h-screen w-screen bg-cover bg-bottom",
-                isMobile && ""
+                isMobile && "h-screen relative"
             )}
             style={{
                 backgroundImage: "url('/assets/images/bg-2.jpg')"
@@ -43,7 +43,7 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            <div className='h-full flex flex-col justify-center px-5'>
+            <div className='h-full flex flex-col justify-center px-5 relative z-50'>
                 <div className='max-w-md flex flex-col mx-auto w-full bg-white p-5 rounded-xl'>
                     <form onSubmit={submit}>
                         <div>
@@ -87,6 +87,12 @@ export default function Login({ status, canResetPassword }) {
                         </div>
                     </form>
                 </div>
+            </div>
+            <div className="absolute bottom-0 -right-[20%] ">
+                <img
+                    src="/assets/images/bg-diponegoro.png"
+                    className="w-full h-full object-contain"
+                />
             </div>
         </div>
     );
