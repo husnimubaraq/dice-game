@@ -424,7 +424,10 @@ export default function Welcome({ }) {
     return (
         <>
             <Head title="Welcome" />
-            <main className='flex flex-col h-screen w-screen relative overflow-hidden' id="map">
+            <main className={twMerge(
+                'flex flex-col h-screen w-screen relative overflow-hidden',
+                isLandscape && "h-fit"
+            )} id="map">
                 <img
                     src='/assets/images/bg-4.png'
                     className={twMerge(
@@ -607,7 +610,7 @@ export default function Welcome({ }) {
                                 }
                                 setPlayers(newData)
                             }}
-                            size={100}
+                            size={isLandscape ? 70 : 100}
                         />
                     </div>
                 </div>
