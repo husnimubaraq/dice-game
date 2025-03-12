@@ -572,7 +572,7 @@ export default function Welcome({ }) {
                     )}
                     <div className={twMerge(
                         'absolute ',
-                        isLandscape ? "bottom-[10%] right-0" : "-top-[20%] right-0"
+                        isLandscape ? "top-[30%] -left-[5%]" : "-top-[20%] right-0"
                     )}>
                         <Dice
                             // cheatValue={2}
